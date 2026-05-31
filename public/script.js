@@ -83,6 +83,54 @@ function animateCounter(element) {
 }
 
 /* ===================================================== */
+/* STAGGER HELPERS */
+/* ===================================================== */
+
+function staggerChildren(parent, selector, className = "animate-rise", delay = 120) {
+  if (!parent) return;
+
+  const children = parent.querySelectorAll(selector);
+
+  children.forEach((child, index) => {
+    setTimeout(() => {
+      child.classList.add(className);
+    }, index * delay);
+  });
+}
+
+function animateTimeline(panel) {
+  if (!panel) return;
+
+  const rows = panel.querySelectorAll(".timeline-row");
+
+  rows.forEach((row, rowIndex) => {
+    setTimeout(() => {
+      row.classList.add("animate-rise");
+
+      const bars = row.querySelectorAll("i");
+
+      bars.forEach((bar, barIndex) => {
+        setTimeout(() => {
+          bar.classList.add("animate-fill");
+        }, barIndex * 120);
+      });
+    }, rowIndex * 180);
+  });
+}
+
+function animateAgreementLines(page) {
+  if (!page) return;
+
+  const lines = page.querySelectorAll(".agreement-line");
+
+  lines.forEach((line, index) => {
+    setTimeout(() => {
+      line.classList.add("animate-rise");
+    }, index * 150);
+  });
+}
+
+/* ===================================================== */
 /* INTERSECTION-BASED MOTION */
 /* ===================================================== */
 
@@ -95,66 +143,115 @@ const motionObserver = new IntersectionObserver(
 
       el.classList.add("in-view");
 
-      if (
-        el.classList.contains("metric-card") ||
-        el.classList.contains("impact-metric") ||
-        el.classList.contains("scholarship-box") ||
-        el.classList.contains("fund-card") ||
-        el.classList.contains("restriction-panel") ||
-        el.classList.contains("agreement-page")
-      ) {
+      const popTargets = [
+        "metric-card",
+        "machine-card",
+        "impact-metric",
+        "scholarship-box",
+        "fund-card",
+        "restriction-panel",
+        "agreement-page",
+        "promise-node",
+        "reality-column",
+        "human-vignette"
+      ];
+
+      const shouldPop = popTargets.some(className =>
+        el.classList.contains(className)
+      );
+
+      if (shouldPop) {
         el.classList.add("animate-pop");
       } else {
         el.classList.add("animate-rise");
       }
 
+      /* --------------------------------------------- */
+      /* METRIC COUNTING */
+      /* --------------------------------------------- */
+
       const metricNumbers = el.querySelectorAll(
-        ".metric-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
+        ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
       );
 
       metricNumbers.forEach(counter => {
         animateCounter(counter);
       });
 
-      if (el.classList.contains("timeline-panel")) {
-        const rows = el.querySelectorAll(".timeline-row");
-
-        rows.forEach((row, rowIndex) => {
-          setTimeout(() => {
-            row.classList.add("animate-rise");
-
-            const bars = row.querySelectorAll("i");
-
-            bars.forEach((bar, barIndex) => {
-              setTimeout(() => {
-                bar.classList.add("animate-fill");
-              }, barIndex * 120);
-            });
-          }, rowIndex * 180);
-        });
+      if (
+        el.matches(
+          ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
+        )
+      ) {
+        animateCounter(el);
       }
 
-      if (
-        el.classList.contains("process-card") ||
-        el.classList.contains("activation-map") ||
-        el.classList.contains("student-flow")
-      ) {
-        const children = el.querySelectorAll(
-          ".process-node, .activation-map div, .student-row"
-        );
+      /* --------------------------------------------- */
+      /* TIMELINE */
+      /* --------------------------------------------- */
 
-        children.forEach((child, index) => {
-          setTimeout(() => {
-            child.classList.add("animate-rise");
-          }, index * 130);
-        });
+      if (el.classList.contains("timeline-panel")) {
+        animateTimeline(el);
+      }
+
+      /* --------------------------------------------- */
+      /* PROCESS / ACTIVATION / STUDENT FLOW */
+      /* --------------------------------------------- */
+
+      if (el.classList.contains("process-card")) {
+        staggerChildren(el, ".process-node", "animate-rise", 130);
+      }
+
+      if (el.classList.contains("activation-map")) {
+        staggerChildren(el, "div", "animate-rise", 130);
+      }
+
+      if (el.classList.contains("student-flow")) {
+        staggerChildren(el, ".student-row", "animate-rise", 130);
+      }
+
+      /* --------------------------------------------- */
+      /* PROMISE FLOW */
+      /* --------------------------------------------- */
+
+      if (el.classList.contains("promise-flow")) {
+        staggerChildren(el, ".promise-node, .promise-arrow", "animate-rise", 160);
+      }
+
+      /* --------------------------------------------- */
+      /* REALITY FLOW */
+      /* --------------------------------------------- */
+
+      if (el.classList.contains("reality-grid")) {
+        staggerChildren(el, ".reality-column", "animate-pop", 160);
+        staggerChildren(el, ".vertical-flow div, .vertical-flow span, .complex-flow div", "animate-rise", 90);
+      }
+
+      if (el.classList.contains("complex-flow")) {
+        staggerChildren(el, "div", "animate-rise", 90);
+      }
+
+      /* --------------------------------------------- */
+      /* AGREEMENT LINES */
+      /* --------------------------------------------- */
+
+      if (el.classList.contains("agreement-page")) {
+        animateAgreementLines(el);
+      }
+
+      /* --------------------------------------------- */
+      /* FUTURE GRID */
+      /* --------------------------------------------- */
+
+      if (el.classList.contains("future-grid")) {
+        staggerChildren(el, "div", "animate-pop", 180);
       }
 
       motionObserver.unobserve(el);
     });
   },
   {
-    threshold: 0.25,
+    threshold: 0.22,
     rootMargin: "0px 0px -10% 0px"
   }
 );
@@ -165,6 +262,7 @@ const motionObserver = new IntersectionObserver(
 
 document.querySelectorAll(`
   .metric-card,
+  .machine-card,
   .restriction-panel,
   .fund-card,
   .agreement-page,
@@ -173,13 +271,21 @@ document.querySelectorAll(`
   .activation-map,
   .student-flow,
   .impact-metric,
-  .scholarship-box
+  .scholarship-box,
+  .promise-flow,
+  .promise-node,
+  .reality-grid,
+  .reality-column,
+  .complex-flow,
+  .human-vignette,
+  .future-grid,
+  .future-grid div
 `).forEach(el => {
   motionObserver.observe(el);
 });
 
 /* ===================================================== */
-/* SCROLL EFFECTS */
+/* SCROLL-LINKED EFFECTS */
 /* ===================================================== */
 
 function updateScrollEffects() {
@@ -197,12 +303,41 @@ function updateScrollEffects() {
     progressBar.style.width = `${progress}%`;
   }
 
+  /* --------------------------------------------- */
+  /* HERO DRIFT */
+  /* --------------------------------------------- */
+
   const hero = document.querySelector(".hero-inner");
 
   if (hero) {
-    const heroShift = Math.min(scrollTop * 0.035, 80);
+    const heroShift = Math.min(scrollTop * 0.028, 70);
     hero.style.transform = `translateY(${heroShift}px)`;
   }
+
+  /* --------------------------------------------- */
+  /* MACHINE CARD DEPTH */
+  /* --------------------------------------------- */
+
+  document.querySelectorAll(".machine-card").forEach((card, index) => {
+    const rect = card.getBoundingClientRect();
+    const viewport = window.innerHeight;
+
+    const distanceFromCenter =
+      Math.abs((rect.top + rect.height / 2) - viewport / 2);
+
+    const focus =
+      clamp(1 - distanceFromCenter / viewport, 0, 1);
+
+    card.style.transform =
+      `translateY(${(1 - focus) * 12}px) scale(${0.985 + focus * 0.015})`;
+
+    card.style.opacity =
+      `${0.72 + focus * 0.28}`;
+  });
+
+  /* --------------------------------------------- */
+  /* AGREEMENT IMMERSION */
+  /* --------------------------------------------- */
 
   const agreementScene = document.querySelector(".agreement-scene");
   const agreementPage = document.querySelector(".agreement-page");
@@ -218,7 +353,27 @@ function updateScrollEffects() {
     );
 
     agreementPage.style.boxShadow =
-      `0 ${40 + visibleProgress * 25}px ${120 + visibleProgress * 40}px rgba(16,16,16,${0.14 + visibleProgress * 0.04})`;
+      `0 ${40 + visibleProgress * 28}px ${120 + visibleProgress * 46}px rgba(16,16,16,${0.14 + visibleProgress * 0.05})`;
+
+    agreementPage.style.transform =
+      `scale(${1 + visibleProgress * 0.006})`;
+  }
+
+  /* --------------------------------------------- */
+  /* HUMAN VIGNETTE EMPHASIS */
+  /* --------------------------------------------- */
+
+  const humanVignette = document.querySelector(".human-vignette");
+
+  if (humanVignette) {
+    const rect = humanVignette.getBoundingClientRect();
+    const viewport = window.innerHeight;
+
+    const focus =
+      clamp(1 - Math.abs(rect.top + rect.height / 2 - viewport / 2) / viewport, 0, 1);
+
+    humanVignette.style.boxShadow =
+      `0 ${30 + focus * 24}px ${90 + focus * 40}px rgba(16,16,16,${0.10 + focus * 0.05})`;
   }
 
   ticking = false;
