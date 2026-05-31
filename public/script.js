@@ -138,6 +138,39 @@ function animateAgreementLines(page) {
   });
 }
 
+function animateMaze(panel) {
+  if (!panel) return;
+
+  const chaosNodes = panel.querySelectorAll(".maze-node");
+  const straightNodes = panel.querySelectorAll(".straight-node");
+  const straightLines = panel.querySelectorAll(".straight-line");
+  const chaosPath = panel.querySelector(".chaos-path");
+
+  chaosNodes.forEach((node, index) => {
+    setTimeout(() => {
+      node.classList.add("animate-rise");
+    }, index * 140);
+  });
+
+  if (chaosPath) {
+    setTimeout(() => {
+      chaosPath.classList.add("draw-path");
+    }, 350);
+  }
+
+  straightNodes.forEach((node, index) => {
+    setTimeout(() => {
+      node.classList.add("animate-rise");
+    }, 1300 + index * 150);
+  });
+
+  straightLines.forEach((line, index) => {
+    setTimeout(() => {
+      line.classList.add("draw-straight-line");
+    }, 1425 + index * 150);
+  });
+}
+
 /* ===================================================== */
 /* INTERSECTION-BASED MOTION */
 /* ===================================================== */
@@ -161,7 +194,8 @@ const motionObserver = new IntersectionObserver(
         "agreement-page",
         "promise-node",
         "reality-column",
-        "human-vignette"
+        "human-vignette",
+        "maze-panel"
       ];
 
       const shouldPop = popTargets.some(className =>
@@ -173,10 +207,6 @@ const motionObserver = new IntersectionObserver(
       } else {
         el.classList.add("animate-rise");
       }
-
-      /* --------------------------------------------- */
-      /* METRIC COUNTING */
-      /* --------------------------------------------- */
 
       const metricNumbers = el.querySelectorAll(
         ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
@@ -194,17 +224,9 @@ const motionObserver = new IntersectionObserver(
         animateCounter(el);
       }
 
-      /* --------------------------------------------- */
-      /* TIMELINE */
-      /* --------------------------------------------- */
-
       if (el.classList.contains("timeline-panel")) {
         animateTimeline(el);
       }
-
-      /* --------------------------------------------- */
-      /* PROCESS / ACTIVATION / STUDENT FLOW */
-      /* --------------------------------------------- */
 
       if (el.classList.contains("process-card")) {
         staggerChildren(el, ".process-node", "animate-rise", 130);
@@ -218,17 +240,9 @@ const motionObserver = new IntersectionObserver(
         staggerChildren(el, ".student-row", "animate-rise", 130);
       }
 
-      /* --------------------------------------------- */
-      /* PROMISE FLOW */
-      /* --------------------------------------------- */
-
       if (el.classList.contains("promise-flow")) {
         staggerChildren(el, ".promise-node, .promise-arrow", "animate-rise", 160);
       }
-
-      /* --------------------------------------------- */
-      /* REALITY FLOW */
-      /* --------------------------------------------- */
 
       if (el.classList.contains("reality-grid")) {
         staggerChildren(el, ".reality-column", "animate-pop", 160);
@@ -239,17 +253,13 @@ const motionObserver = new IntersectionObserver(
         staggerChildren(el, "div", "animate-rise", 90);
       }
 
-      /* --------------------------------------------- */
-      /* AGREEMENT LINES + RED PEN NOTES */
-      /* --------------------------------------------- */
-
       if (el.classList.contains("agreement-page")) {
         animateAgreementLines(el);
       }
 
-      /* --------------------------------------------- */
-      /* FUTURE GRID */
-      /* --------------------------------------------- */
+      if (el.classList.contains("maze-comparison")) {
+        animateMaze(el);
+      }
 
       if (el.classList.contains("future-grid")) {
         staggerChildren(el, "div", "animate-pop", 180);
@@ -286,6 +296,8 @@ document.querySelectorAll(`
   .reality-column,
   .complex-flow,
   .human-vignette,
+  .maze-comparison,
+  .maze-panel,
   .future-grid,
   .future-grid div
 `).forEach(el => {
@@ -311,20 +323,12 @@ function updateScrollEffects() {
     progressBar.style.width = `${progress}%`;
   }
 
-  /* --------------------------------------------- */
-  /* HERO DRIFT */
-  /* --------------------------------------------- */
-
   const hero = document.querySelector(".hero-inner");
 
   if (hero) {
     const heroShift = Math.min(scrollTop * 0.028, 70);
     hero.style.transform = `translateY(${heroShift}px)`;
   }
-
-  /* --------------------------------------------- */
-  /* MACHINE CARD DEPTH */
-  /* --------------------------------------------- */
 
   document.querySelectorAll(".machine-card").forEach((card) => {
     const rect = card.getBoundingClientRect();
@@ -342,10 +346,6 @@ function updateScrollEffects() {
     card.style.opacity =
       `${0.72 + focus * 0.28}`;
   });
-
-  /* --------------------------------------------- */
-  /* AGREEMENT IMMERSION */
-  /* --------------------------------------------- */
 
   const agreementScene = document.querySelector(".agreement-scene");
   const agreementPage = document.querySelector(".agreement-page");
@@ -367,9 +367,17 @@ function updateScrollEffects() {
       `scale(${1 + visibleProgress * 0.006})`;
   }
 
-  /* --------------------------------------------- */
-  /* HUMAN VIGNETTE EMPHASIS */
-  /* --------------------------------------------- */
+  const mazeScene = document.querySelector(".maze-scene");
+
+  if (mazeScene) {
+    const rect = mazeScene.getBoundingClientRect();
+    const viewport = window.innerHeight;
+
+    const focus =
+      clamp(1 - Math.abs(rect.top + rect.height * 0.35 - viewport / 2) / viewport, 0, 1);
+
+    mazeScene.style.setProperty("--maze-focus", focus.toFixed(3));
+  }
 
   const humanVignette = document.querySelector(".human-vignette");
 
