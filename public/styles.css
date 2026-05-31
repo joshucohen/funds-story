@@ -876,11 +876,11 @@ em {
 }
 
 .journey-node.active {
-  z-index: 8;
+  z-index: 12;
   opacity: 1;
   transform: scale(1.16);
-  border-color: rgba(166,66,58,0.36);
-  box-shadow: 0 44px 120px rgba(16,16,16,0.24);
+  border-color: rgba(166,66,58,0.38);
+  box-shadow: 0 46px 130px rgba(16,16,16,0.24);
 }
 
 .journey-start {
@@ -895,19 +895,22 @@ em {
 }
 
 .journey-warning.active {
-  transform: scale(1.22);
-  box-shadow: 0 50px 140px rgba(166,66,58,0.24);
+  z-index: 14;
+  transform: scale(1.24);
+  background: rgba(166,66,58,0.16);
+  border-color: rgba(166,66,58,0.42);
+  box-shadow: 0 54px 150px rgba(166,66,58,0.28);
 }
 
 .journey-question-card {
   position: absolute;
-  left: 1470px;
+  left: 1360px;
   top: 1180px;
   z-index: 3;
   width: 390px;
   padding: 1.75rem;
   border-radius: 30px;
-  background: rgba(255,255,255,0.78);
+  background: rgba(255,255,255,0.72);
   border: 1px solid rgba(255,255,255,0.52);
   box-shadow: var(--shadow-medium);
   opacity: 0;
@@ -919,13 +922,13 @@ em {
 }
 
 .journey-question-card.visible {
-  opacity: 0.86;
+  opacity: 0.82;
   transform: translateY(0) scale(1);
 }
 
 .journey-question-card.faded {
   opacity: 0;
-  transform: translateY(-18px) scale(0.94);
+  transform: translateY(-20px) scale(0.94);
 }
 
 .journey-question-card h3 {
@@ -957,6 +960,81 @@ em {
 
 .maze-scroll-steps div {
   height: 65vh;
+}
+
+/* ===================================================== */
+/* FACILITATOR CONTRAST */
+/* ===================================================== */
+
+.facilitator-scene {
+  padding: 18vh 8vw;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(79,125,90,0.12), transparent 36%),
+    linear-gradient(180deg, #f6f2eb 0%, #edf2ec 100%);
+}
+
+.facilitator-inner {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 6vw;
+  align-items: center;
+}
+
+.facilitator-copy {
+  max-width: 720px;
+}
+
+.premium-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: clamp(2rem, 4vw, 3rem);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 85% 20%, rgba(79,125,90,0.14), transparent 38%),
+    linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,255,255,0.62));
+  border: 1px solid rgba(255,255,255,0.56);
+  box-shadow: var(--shadow-large);
+}
+
+.facilitator-node {
+  min-width: 115px;
+  padding: 1.1rem 1rem;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  font-weight: 850;
+}
+
+.facilitator-node.impact-node {
+  color: var(--green);
+  background: rgba(79,125,90,0.15);
+  border-color: rgba(79,125,90,0.28);
+  transform: scale(1.05);
+}
+
+.facilitator-line {
+  flex: 1;
+  min-width: 24px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0.78;
+}
+
+.facilitator-line.draw-straight-line {
+  animation: drawStraightLineHorizontal 650ms var(--ease) forwards;
+}
+
+@keyframes drawStraightLineHorizontal {
+  to {
+    transform: scaleX(1);
+  }
 }
 
 /* ===================================================== */

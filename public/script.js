@@ -218,7 +218,8 @@ function updateMazeJourney() {
   const rawProgress = clamp(-rect.top / scrollable, 0, 1);
 
   const segmentCount = mazeJourneyStops.length - 1;
-  const journeyProgress = clamp(rawProgress * 0.96, 0, 1);
+  const journeyProgress = clamp(rawProgress, 0, 1);
+
   const exactIndex = journeyProgress * segmentCount;
   const currentIndex = Math.min(Math.floor(exactIndex), segmentCount - 1);
   const localProgress = exactIndex - currentIndex;
@@ -228,8 +229,13 @@ function updateMazeJourney() {
 
   const eased = easeOutCubic(localProgress);
 
-  const currentX = interpolate(from.x, to.x, eased);
-  const currentY = interpolate(from.y, to.y, eased);
+  let currentX = interpolate(from.x, to.x, eased);
+  let currentY = interpolate(from.y, to.y, eased);
+
+  if (rawProgress > 0.92) {
+    currentX = mazeJourneyStops[mazeJourneyStops.length - 1].x;
+    currentY = mazeJourneyStops[mazeJourneyStops.length - 1].y;
+  }
 
   const viewportWidth = viewport.offsetWidth;
   const viewportHeight = viewport.offsetHeight;
@@ -247,23 +253,21 @@ function updateMazeJourney() {
   );
 
   const panic =
-    Math.sin(rawProgress * Math.PI * 18) *
-    8 *
-    (1 - rawProgress * 0.55);
+    Math.sin(rawProgress * Math.PI * 16) *
+    5 *
+    (1 - rawProgress * 0.75);
 
   world.style.transform =
     `translate3d(${translateX + panic}px, ${translateY - panic}px, 0)`;
 
   if (path) {
-    const pathDraw = clamp(rawProgress * 1.16, 0, 1);
+    const pathDraw = clamp(rawProgress * 1.42, 0, 1);
     path.style.strokeDashoffset = `${3200 - (3200 * pathDraw)}`;
   }
 
-  const visibleNodeIndex = clamp(
-    Math.round(exactIndex),
-    0,
-    mazeJourneyStops.length - 1
-  );
+  const visibleNodeIndex = rawProgress > 0.92
+    ? mazeJourneyStops.length - 1
+    : clamp(Math.round(exactIndex), 0, mazeJourneyStops.length - 1);
 
   nodes.forEach((node) => {
     const nodeStep = Number(node.dataset.step || 0);
@@ -278,8 +282,8 @@ function updateMazeJourney() {
   }
 
   if (questionCard) {
-    questionCard.classList.toggle("visible", rawProgress > 0.08);
-    questionCard.classList.toggle("faded", rawProgress > 0.74);
+    questionCard.classList.toggle("visible", rawProgress > 0.07 && rawProgress < 0.48);
+    questionCard.classList.toggle("faded", rawProgress >= 0.48);
   }
 
   section.style.setProperty("--maze-progress", rawProgress.toFixed(3));
