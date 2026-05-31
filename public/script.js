@@ -126,7 +126,15 @@ function animateAgreementLines(page) {
   lines.forEach((line, index) => {
     setTimeout(() => {
       line.classList.add("animate-rise");
-    }, index * 150);
+
+      const note = line.querySelector(".pen-note");
+
+      if (note) {
+        setTimeout(() => {
+          note.classList.add("visible");
+        }, 450);
+      }
+    }, index * 220);
   });
 }
 
@@ -232,7 +240,7 @@ const motionObserver = new IntersectionObserver(
       }
 
       /* --------------------------------------------- */
-      /* AGREEMENT LINES */
+      /* AGREEMENT LINES + RED PEN NOTES */
       /* --------------------------------------------- */
 
       if (el.classList.contains("agreement-page")) {
@@ -318,7 +326,7 @@ function updateScrollEffects() {
   /* MACHINE CARD DEPTH */
   /* --------------------------------------------- */
 
-  document.querySelectorAll(".machine-card").forEach((card, index) => {
+  document.querySelectorAll(".machine-card").forEach((card) => {
     const rect = card.getBoundingClientRect();
     const viewport = window.innerHeight;
 

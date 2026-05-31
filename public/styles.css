@@ -631,6 +631,55 @@ em {
 /* AGREEMENT */
 /* ===================================================== */
 
+.annotated-line {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.pen-note {
+  display: block;
+
+  width: fit-content;
+  max-width: 360px;
+
+  margin-top: 0.85rem;
+  margin-left: auto;
+
+  color: #b3261e;
+
+  font-family:
+    "Bradley Hand",
+    "Marker Felt",
+    "Comic Sans MS",
+    cursive;
+
+  font-size: clamp(1rem, 1.35vw, 1.35rem);
+  line-height: 1.25;
+  font-weight: 700;
+
+  transform:
+    rotate(-2deg)
+    translateY(8px);
+
+  opacity: 0;
+
+  transition:
+    opacity 700ms var(--ease),
+    transform 700ms var(--ease);
+}
+
+.pen-note::before {
+  content: "↳ ";
+}
+
+.pen-note.visible {
+  opacity: 1;
+
+  transform:
+    rotate(-2deg)
+    translateY(0);
+}
+
 .agreement-scene {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
