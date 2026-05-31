@@ -259,66 +259,126 @@
       </div>
     </section>
 
-    <section class="maze-scene" id="maze-scene">
-      <div class="maze-header">
-        <p class="eyebrow">The question nobody owns</p>
-        <h2>“Can I spend this?” should be a simple question.</h2>
-        <p>
-          Without a clear facilitator, the path to an answer can move sideways, backward,
-          and across offices before anyone feels confident enough to act.
-        </p>
-      </div>
+    <section class="maze-journey" id="maze-scene">
+      <div class="maze-journey-sticky">
 
-      <div class="maze-comparison">
-        <div class="maze-panel maze-panel-chaos">
-          <div class="maze-panel-header">
-            <span class="pill">Without a facilitator</span>
-            <h3>The search for an answer becomes the process.</h3>
-          </div>
-
-          <div class="maze-map" aria-label="A winding path through institutional offices">
-            <div class="maze-node node-start" style="--x: 4%; --y: 10%;">Department</div>
-            <div class="maze-node" style="--x: 42%; --y: 8%;">Business Office</div>
-            <div class="maze-node" style="--x: 74%; --y: 24%;">Foundation</div>
-            <div class="maze-node" style="--x: 36%; --y: 34%;">Advancement</div>
-            <div class="maze-node" style="--x: 8%; --y: 52%;">Financial Aid</div>
-            <div class="maze-node" style="--x: 56%; --y: 58%;">Policy</div>
-            <div class="maze-node" style="--x: 24%; --y: 76%;">Back to Department</div>
-            <div class="maze-node node-warning" style="--x: 66%; --y: 82%;">Partial Answer</div>
-
-            <svg class="maze-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <path class="maze-path chaos-path" d="M 10 16 L 48 15 L 80 30 L 42 40 L 14 58 L 62 65 L 30 82 L 72 88" />
-            </svg>
-          </div>
-
-          <p class="caption">
-            The problem is not that people refuse to spend. It is that the answer is distributed across too many places.
+        <div class="maze-journey-copy">
+          <p class="eyebrow">The question nobody owns</p>
+          <h2>“Can I spend this?” should be a simple question.</h2>
+          <p>
+            But without a clear facilitator, the search for an answer can become the process itself.
           </p>
         </div>
 
-        <div class="maze-panel maze-panel-straight">
-          <div class="maze-panel-header">
-            <span class="pill">With a facilitator</span>
-            <h3>The path becomes visible.</h3>
-          </div>
+        <div class="maze-viewport" aria-label="A scrollytelling maze showing how a fund-use question moves across offices">
+          <div class="maze-world" id="maze-world">
 
-          <div class="straight-map" aria-label="A direct path from question to impact">
-            <div class="straight-node">Question</div>
-            <div class="straight-line"></div>
-            <div class="straight-node">Purpose Review</div>
-            <div class="straight-line"></div>
-            <div class="straight-node">Stakeholder Alignment</div>
-            <div class="straight-line"></div>
-            <div class="straight-node">Decision</div>
-            <div class="straight-line"></div>
-            <div class="straight-node">Spending Plan</div>
-            <div class="straight-line"></div>
-            <div class="straight-node impact-node">Impact</div>
-          </div>
+            <svg class="maze-world-svg" viewBox="0 0 2400 1500" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                class="maze-world-path"
+                d="M 220 760 C 420 620, 580 560, 760 600 C 980 650, 1060 450, 1220 360 C 1420 250, 1700 320, 1810 520 C 1910 700, 1620 790, 1420 760 C 1180 720, 1000 920, 780 1020 C 550 1120, 420 970, 610 850 C 780 740, 1050 980, 1300 1100 C 1540 1215, 1750 1120, 1920 950"
+              />
+            </svg>
 
-          <p class="caption">
+            <div class="journey-node journey-start" data-step="0" style="--x: 120px; --y: 680px;">
+              <span>Start</span>
+              Department asks:
+              <strong>Can I spend this?</strong>
+            </div>
+
+            <div class="journey-node" data-step="1" style="--x: 640px; --y: 510px;">
+              Business Office
+              <small>“Check with the Foundation.”</small>
+            </div>
+
+            <div class="journey-node" data-step="2" style="--x: 1160px; --y: 260px;">
+              Foundation
+              <small>“The balance is available, but purpose needs review.”</small>
+            </div>
+
+            <div class="journey-node" data-step="3" style="--x: 1720px; --y: 450px;">
+              Advancement
+              <small>“We need to confirm donor intent.”</small>
+            </div>
+
+            <div class="journey-node" data-step="4" style="--x: 1370px; --y: 690px;">
+              Back to Foundation
+              <small>“It may be allowable, but the use case is unclear.”</small>
+            </div>
+
+            <div class="journey-node" data-step="5" style="--x: 760px; --y: 930px;">
+              Financial Aid
+              <small>“If it is scholarship aid, criteria and selection matter.”</small>
+            </div>
+
+            <div class="journey-node" data-step="6" style="--x: 350px; --y: 1090px;">
+              Back to Department
+              <small>“So... can we spend it or not?”</small>
+            </div>
+
+            <div class="journey-node" data-step="7" style="--x: 1220px; --y: 1060px;">
+              Policy
+              <small>“Depends on process, purpose, and documentation.”</small>
+            </div>
+
+            <div class="journey-node journey-warning" data-step="8" style="--x: 1840px; --y: 860px;">
+              Partial Answer
+              <small>Everyone helped. Nobody owns the outcome.</small>
+            </div>
+
+            <div class="journey-question-card" id="journey-question-card">
+              <span class="pill">Without a facilitator</span>
+              <h3>The path moves sideways, backward, and around the institution.</h3>
+              <p>
+                The problem is not that people refuse to spend. It is that the answer is distributed across too many places.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="journey-status" aria-hidden="true">
+          <span id="journey-status-text">Looking for the right owner...</span>
+        </div>
+
+      </div>
+
+      <div class="maze-scroll-steps" aria-hidden="true">
+        <div data-maze-step="0"></div>
+        <div data-maze-step="1"></div>
+        <div data-maze-step="2"></div>
+        <div data-maze-step="3"></div>
+        <div data-maze-step="4"></div>
+        <div data-maze-step="5"></div>
+        <div data-maze-step="6"></div>
+        <div data-maze-step="7"></div>
+        <div data-maze-step="8"></div>
+        <div data-maze-step="9"></div>
+      </div>
+    </section>
+
+    <section class="facilitator-scene" id="facilitator-scene">
+      <div class="facilitator-inner">
+        <div class="facilitator-copy">
+          <p class="eyebrow">With a facilitator</p>
+          <h2>The same question becomes a straight path.</h2>
+          <p>
             The intervention is not magic. It is ownership, translation, and follow-through.
           </p>
+        </div>
+
+        <div class="facilitator-path" aria-label="A direct path from question to impact">
+          <div class="facilitator-node">Question</div>
+          <div class="facilitator-line"></div>
+          <div class="facilitator-node">Purpose Review</div>
+          <div class="facilitator-line"></div>
+          <div class="facilitator-node">Stakeholder Alignment</div>
+          <div class="facilitator-line"></div>
+          <div class="facilitator-node">Decision</div>
+          <div class="facilitator-line"></div>
+          <div class="facilitator-node">Spending Plan</div>
+          <div class="facilitator-line"></div>
+          <div class="facilitator-node impact-node">Impact</div>
         </div>
       </div>
     </section>

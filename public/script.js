@@ -138,37 +138,151 @@ function animateAgreementLines(page) {
   });
 }
 
-function animateMaze(panel) {
-  if (!panel) return;
+function animateFacilitatorPath(path) {
+  if (!path) return;
 
-  const chaosNodes = panel.querySelectorAll(".maze-node");
-  const straightNodes = panel.querySelectorAll(".straight-node");
-  const straightLines = panel.querySelectorAll(".straight-line");
-  const chaosPath = panel.querySelector(".chaos-path");
+  staggerChildren(path, ".facilitator-node", "animate-rise", 160);
 
-  chaosNodes.forEach((node, index) => {
-    setTimeout(() => {
-      node.classList.add("animate-rise");
-    }, index * 140);
-  });
+  const lines = path.querySelectorAll(".facilitator-line");
 
-  if (chaosPath) {
-    setTimeout(() => {
-      chaosPath.classList.add("draw-path");
-    }, 350);
-  }
-
-  straightNodes.forEach((node, index) => {
-    setTimeout(() => {
-      node.classList.add("animate-rise");
-    }, 1300 + index * 150);
-  });
-
-  straightLines.forEach((line, index) => {
+  lines.forEach((line, index) => {
     setTimeout(() => {
       line.classList.add("draw-straight-line");
-    }, 1425 + index * 150);
+    }, 220 + index * 170);
   });
+}
+
+/* ===================================================== */
+/* MAZE JOURNEY CONFIG */
+/* ===================================================== */
+
+const mazeJourneyStops = [
+  {
+    x: 120,
+    y: 680,
+    label: "Department asks the question."
+  },
+  {
+    x: 640,
+    y: 510,
+    label: "Sent to the Business Office."
+  },
+  {
+    x: 1160,
+    y: 260,
+    label: "Routed to the Foundation."
+  },
+  {
+    x: 1720,
+    y: 450,
+    label: "Redirected to Advancement."
+  },
+  {
+    x: 1370,
+    y: 690,
+    label: "Back to the Foundation."
+  },
+  {
+    x: 760,
+    y: 930,
+    label: "Now Financial Aid weighs in."
+  },
+  {
+    x: 350,
+    y: 1090,
+    label: "Back to the Department."
+  },
+  {
+    x: 1220,
+    y: 1060,
+    label: "Policy enters the conversation."
+  },
+  {
+    x: 1840,
+    y: 860,
+    label: "The result: a partial answer."
+  }
+];
+
+function interpolate(a, b, t) {
+  return a + ((b - a) * t);
+}
+
+function updateMazeJourney() {
+  const section = document.querySelector(".maze-journey");
+  const viewport = document.querySelector(".maze-viewport");
+  const world = document.getElementById("maze-world");
+  const path = document.querySelector(".maze-world-path");
+  const nodes = document.querySelectorAll(".journey-node");
+  const status = document.getElementById("journey-status-text");
+  const questionCard = document.getElementById("journey-question-card");
+
+  if (!section || !viewport || !world) return;
+
+  const rect = section.getBoundingClientRect();
+  const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
+  const rawProgress = clamp(-rect.top / scrollable, 0, 1);
+
+  const segmentCount = mazeJourneyStops.length - 1;
+  const journeyProgress = clamp(rawProgress * 0.92, 0, 1);
+  const exactIndex = journeyProgress * segmentCount;
+  const currentIndex = Math.min(Math.floor(exactIndex), segmentCount - 1);
+  const localProgress = exactIndex - currentIndex;
+
+  const from = mazeJourneyStops[currentIndex];
+  const to = mazeJourneyStops[currentIndex + 1];
+
+  const eased = easeOutCubic(localProgress);
+
+  const currentX = interpolate(from.x, to.x, eased);
+  const currentY = interpolate(from.y, to.y, eased);
+
+  const viewportWidth = viewport.offsetWidth;
+  const viewportHeight = viewport.offsetHeight;
+
+  const translateX = clamp(
+    (viewportWidth / 2) - currentX,
+    viewportWidth - 2400,
+    0
+  );
+
+  const translateY = clamp(
+    (viewportHeight / 2) - currentY,
+    viewportHeight - 1500,
+    0
+  );
+
+  const panic = Math.sin(rawProgress * Math.PI * 14) * 6 * (1 - rawProgress * 0.5);
+
+  world.style.transform =
+    `translate3d(${translateX + panic}px, ${translateY - panic}px, 0)`;
+
+  if (path) {
+    const pathDraw = clamp(rawProgress * 1.12, 0, 1);
+    path.style.strokeDashoffset = `${3200 - (3200 * pathDraw)}`;
+  }
+
+  const visibleNodeIndex = Math.round(exactIndex);
+
+  nodes.forEach((node) => {
+    const nodeStep = Number(node.dataset.step || 0);
+
+    node.classList.toggle("active", nodeStep === visibleNodeIndex);
+    node.classList.toggle("visited", nodeStep < visibleNodeIndex);
+    node.classList.toggle("revealed", nodeStep <= visibleNodeIndex);
+  });
+
+  if (status) {
+    const statusIndex = clamp(visibleNodeIndex, 0, mazeJourneyStops.length - 1);
+    status.textContent = mazeJourneyStops[statusIndex].label;
+  }
+
+  if (questionCard) {
+    questionCard.classList.toggle("visible", rawProgress > 0.08);
+    questionCard.classList.toggle("faded", rawProgress > 0.78);
+  }
+
+  section.style.setProperty("--maze-progress", rawProgress.toFixed(3));
 }
 
 /* ===================================================== */
@@ -194,8 +308,7 @@ const motionObserver = new IntersectionObserver(
         "agreement-page",
         "promise-node",
         "reality-column",
-        "human-vignette",
-        "maze-panel"
+        "human-vignette"
       ];
 
       const shouldPop = popTargets.some(className =>
@@ -257,8 +370,8 @@ const motionObserver = new IntersectionObserver(
         animateAgreementLines(el);
       }
 
-      if (el.classList.contains("maze-comparison")) {
-        animateMaze(el);
+      if (el.classList.contains("facilitator-path")) {
+        animateFacilitatorPath(el);
       }
 
       if (el.classList.contains("future-grid")) {
@@ -296,8 +409,7 @@ document.querySelectorAll(`
   .reality-column,
   .complex-flow,
   .human-vignette,
-  .maze-comparison,
-  .maze-panel,
+  .facilitator-path,
   .future-grid,
   .future-grid div
 `).forEach(el => {
@@ -367,17 +479,7 @@ function updateScrollEffects() {
       `scale(${1 + visibleProgress * 0.006})`;
   }
 
-  const mazeScene = document.querySelector(".maze-scene");
-
-  if (mazeScene) {
-    const rect = mazeScene.getBoundingClientRect();
-    const viewport = window.innerHeight;
-
-    const focus =
-      clamp(1 - Math.abs(rect.top + rect.height * 0.35 - viewport / 2) / viewport, 0, 1);
-
-    mazeScene.style.setProperty("--maze-focus", focus.toFixed(3));
-  }
+  updateMazeJourney();
 
   const humanVignette = document.querySelector(".human-vignette");
 
@@ -427,5 +529,9 @@ document.querySelectorAll(".path-line.broken").forEach(line => {
 
 window.addEventListener("load", () => {
   document.body.classList.add("loaded");
+  updateScrollEffects();
+});
+
+window.addEventListener("resize", () => {
   updateScrollEffects();
 });
