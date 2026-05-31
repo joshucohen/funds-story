@@ -35,12 +35,7 @@ function parseMetricText(text) {
     ? match[2].split(".")[1].length
     : 0;
 
-  return {
-    prefix,
-    number,
-    suffix,
-    decimals
-  };
+  return { prefix, number, suffix, decimals };
 }
 
 /* ===================================================== */
@@ -65,7 +60,6 @@ function animateCounter(element) {
     const elapsed = now - startTime;
     const progress = clamp(elapsed / duration, 0, 1);
     const eased = easeOutCubic(progress);
-
     const current = number * eased;
 
     element.textContent =
@@ -160,47 +154,47 @@ const mazeJourneyStops = [
   {
     x: 120,
     y: 680,
-    label: "Department asks the question."
+    label: "The department has one question: can we spend this?"
   },
   {
     x: 640,
     y: 510,
-    label: "Sent to the Business Office."
+    label: "Maybe the Business Office knows."
   },
   {
     x: 1160,
     y: 260,
-    label: "Routed to the Foundation."
+    label: "The Foundation can confirm the fund exists, but not always the use."
   },
   {
     x: 1720,
     y: 450,
-    label: "Redirected to Advancement."
+    label: "Advancement may know donor intent, but not the spending process."
   },
   {
     x: 1370,
     y: 690,
-    label: "Back to the Foundation."
+    label: "Back to the Foundation: the restriction still needs interpretation."
   },
   {
     x: 760,
     y: 930,
-    label: "Now Financial Aid weighs in."
+    label: "Financial Aid can award it, but only if the criteria are clear."
   },
   {
     x: 350,
     y: 1090,
-    label: "Back to the Department."
+    label: "Back to the department. The question still is not answered."
   },
   {
     x: 1220,
     y: 1060,
-    label: "Policy enters the conversation."
+    label: "Policy enters the conversation: process, purpose, and documentation all matter."
   },
   {
     x: 1840,
     y: 860,
-    label: "The result: a partial answer."
+    label: "Everyone helped. No one owns the outcome."
   }
 ];
 
@@ -224,7 +218,7 @@ function updateMazeJourney() {
   const rawProgress = clamp(-rect.top / scrollable, 0, 1);
 
   const segmentCount = mazeJourneyStops.length - 1;
-  const journeyProgress = clamp(rawProgress * 0.92, 0, 1);
+  const journeyProgress = clamp(rawProgress * 0.96, 0, 1);
   const exactIndex = journeyProgress * segmentCount;
   const currentIndex = Math.min(Math.floor(exactIndex), segmentCount - 1);
   const localProgress = exactIndex - currentIndex;
@@ -252,17 +246,24 @@ function updateMazeJourney() {
     0
   );
 
-  const panic = Math.sin(rawProgress * Math.PI * 14) * 6 * (1 - rawProgress * 0.5);
+  const panic =
+    Math.sin(rawProgress * Math.PI * 18) *
+    8 *
+    (1 - rawProgress * 0.55);
 
   world.style.transform =
     `translate3d(${translateX + panic}px, ${translateY - panic}px, 0)`;
 
   if (path) {
-    const pathDraw = clamp(rawProgress * 1.12, 0, 1);
+    const pathDraw = clamp(rawProgress * 1.16, 0, 1);
     path.style.strokeDashoffset = `${3200 - (3200 * pathDraw)}`;
   }
 
-  const visibleNodeIndex = Math.round(exactIndex);
+  const visibleNodeIndex = clamp(
+    Math.round(exactIndex),
+    0,
+    mazeJourneyStops.length - 1
+  );
 
   nodes.forEach((node) => {
     const nodeStep = Number(node.dataset.step || 0);
@@ -273,13 +274,12 @@ function updateMazeJourney() {
   });
 
   if (status) {
-    const statusIndex = clamp(visibleNodeIndex, 0, mazeJourneyStops.length - 1);
-    status.textContent = mazeJourneyStops[statusIndex].label;
+    status.textContent = mazeJourneyStops[visibleNodeIndex].label;
   }
 
   if (questionCard) {
     questionCard.classList.toggle("visible", rawProgress > 0.08);
-    questionCard.classList.toggle("faded", rawProgress > 0.78);
+    questionCard.classList.toggle("faded", rawProgress > 0.74);
   }
 
   section.style.setProperty("--maze-progress", rawProgress.toFixed(3));

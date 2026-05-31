@@ -728,7 +728,7 @@ em {
 
 .maze-journey {
   --maze-progress: 0;
-  height: 920vh;
+  height: 650vh;
   position: relative;
   background:
     radial-gradient(circle at 18% 15%, rgba(49,92,114,0.10), transparent 34%),
@@ -775,7 +775,7 @@ em {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow: inset 0 0 90px rgba(246,242,235,0.88);
+  box-shadow: inset 0 0 70px rgba(246,242,235,0.72);
   z-index: 20;
 }
 
@@ -833,8 +833,8 @@ em {
   box-shadow: var(--shadow-medium);
   font-size: 1rem;
   font-weight: 900;
-  opacity: 0.28;
-  transform: scale(0.92);
+  opacity: 0.22;
+  transform: scale(0.9);
   transition:
     opacity 450ms var(--ease),
     transform 450ms var(--ease),
@@ -867,19 +867,20 @@ em {
 }
 
 .journey-node.revealed {
-  opacity: 0.62;
+  opacity: 0.6;
 }
 
 .journey-node.visited {
-  opacity: 0.45;
-  transform: scale(0.94);
+  opacity: 0.36;
+  transform: scale(0.92);
 }
 
 .journey-node.active {
+  z-index: 8;
   opacity: 1;
-  transform: scale(1.06);
-  border-color: rgba(166,66,58,0.24);
-  box-shadow: 0 34px 90px rgba(16,16,16,0.16);
+  transform: scale(1.16);
+  border-color: rgba(166,66,58,0.36);
+  box-shadow: 0 44px 120px rgba(16,16,16,0.24);
 }
 
 .journey-start {
@@ -889,40 +890,46 @@ em {
 
 .journey-warning {
   color: var(--red);
-  background: rgba(166,66,58,0.11);
-  border-color: rgba(166,66,58,0.25);
+  background: rgba(166,66,58,0.13);
+  border-color: rgba(166,66,58,0.30);
+}
+
+.journey-warning.active {
+  transform: scale(1.22);
+  box-shadow: 0 50px 140px rgba(166,66,58,0.24);
 }
 
 .journey-question-card {
   position: absolute;
-  left: 980px;
-  top: 700px;
-  z-index: 5;
-  width: 430px;
-  padding: 2rem;
-  border-radius: 34px;
-  background: rgba(255,255,255,0.86);
+  left: 1470px;
+  top: 1180px;
+  z-index: 3;
+  width: 390px;
+  padding: 1.75rem;
+  border-radius: 30px;
+  background: rgba(255,255,255,0.78);
   border: 1px solid rgba(255,255,255,0.52);
-  box-shadow: var(--shadow-large);
+  box-shadow: var(--shadow-medium);
   opacity: 0;
-  transform: translateY(24px) scale(0.98);
+  transform: translateY(24px) scale(0.96);
+  pointer-events: none;
   transition:
     opacity 700ms var(--ease),
     transform 700ms var(--ease);
 }
 
 .journey-question-card.visible {
-  opacity: 1;
+  opacity: 0.86;
   transform: translateY(0) scale(1);
 }
 
 .journey-question-card.faded {
-  opacity: 0.25;
-  transform: translateY(-10px) scale(0.98);
+  opacity: 0;
+  transform: translateY(-18px) scale(0.94);
 }
 
 .journey-question-card h3 {
-  font-size: clamp(1.9rem, 2.8vw, 3rem);
+  font-size: clamp(1.65rem, 2.2vw, 2.5rem);
 }
 
 .journey-status {
@@ -930,9 +937,10 @@ em {
   left: 6vw;
   bottom: 5vh;
   z-index: 15;
+  max-width: min(720px, 86vw);
   padding: 0.9rem 1.1rem;
   border-radius: 999px;
-  background: rgba(18,18,18,0.72);
+  background: rgba(18,18,18,0.74);
   color: white;
   font-size: 0.86rem;
   font-weight: 800;
@@ -948,78 +956,7 @@ em {
 }
 
 .maze-scroll-steps div {
-  height: 92vh;
-}
-
-/* ===================================================== */
-/* FACILITATOR CONTRAST */
-/* ===================================================== */
-
-.facilitator-scene {
-  padding: 18vh 8vw;
-  background:
-    radial-gradient(circle at 84% 20%, rgba(79,125,90,0.12), transparent 36%),
-    linear-gradient(180deg, #f6f2eb 0%, #edf2ec 100%);
-}
-
-.facilitator-inner {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 6vw;
-  align-items: center;
-}
-
-.facilitator-copy {
-  max-width: 720px;
-}
-
-.facilitator-path {
-  display: grid;
-  justify-items: center;
-  gap: 0.75rem;
-  padding: clamp(2rem, 4vw, 3rem);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.60));
-  border: 1px solid rgba(255,255,255,0.52);
-  box-shadow: var(--shadow-large);
-}
-
-.facilitator-node {
-  width: min(100%, 460px);
-  padding: 1.15rem 1.35rem;
-  border-radius: 22px;
-  background: rgba(255,255,255,0.86);
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: var(--shadow-soft);
-  text-align: center;
-  font-weight: 850;
-}
-
-.facilitator-node.impact-node {
-  color: var(--green);
-  background: rgba(79,125,90,0.13);
-  border-color: rgba(79,125,90,0.24);
-}
-
-.facilitator-line {
-  width: 3px;
-  height: 30px;
-  border-radius: 999px;
-  background: var(--green);
-  transform: scaleY(0);
-  transform-origin: top center;
-  opacity: 0.75;
-}
-
-.facilitator-line.draw-straight-line,
-.straight-line.draw-straight-line {
-  animation: drawStraightLine 650ms var(--ease) forwards;
-}
-
-@keyframes drawStraightLine {
-  to {
-    transform: scaleY(1);
-  }
+  height: 65vh;
 }
 
 /* ===================================================== */
