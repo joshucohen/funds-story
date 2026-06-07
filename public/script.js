@@ -18,9 +18,21 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function interpolate(a, b, t) {
+  return a + ((b - a) * t);
+}
+
+function getSectionProgress(section) {
+  if (!section) return 0;
+
+  const rect = section.getBoundingClientRect();
+  const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
+
+  return clamp(-rect.top / scrollable, 0, 1);
+}
+
 function parseMetricText(text) {
   const clean = text.trim();
-
   const match = clean.match(/^([^0-9.-]*)([0-9,.]+(?:\.[0-9]+)?)(.*)$/);
 
   if (!match) return null;
@@ -92,26 +104,6 @@ function staggerChildren(parent, selector, className = "animate-rise", delay = 1
   });
 }
 
-function animateTimeline(panel) {
-  if (!panel) return;
-
-  const rows = panel.querySelectorAll(".timeline-row");
-
-  rows.forEach((row, rowIndex) => {
-    setTimeout(() => {
-      row.classList.add("animate-rise");
-
-      const bars = row.querySelectorAll("i");
-
-      bars.forEach((bar, barIndex) => {
-        setTimeout(() => {
-          bar.classList.add("animate-fill");
-        }, barIndex * 120);
-      });
-    }, rowIndex * 180);
-  });
-}
-
 function animateAgreementLines(page) {
   if (!page) return;
 
@@ -135,15 +127,170 @@ function animateAgreementLines(page) {
 function animateFacilitatorPath(path) {
   if (!path) return;
 
-  staggerChildren(path, ".facilitator-node", "animate-rise", 160);
+  staggerChildren(path, ".facilitator-node", "animate-rise", 150);
 
   const lines = path.querySelectorAll(".facilitator-line");
 
   lines.forEach((line, index) => {
     setTimeout(() => {
       line.classList.add("draw-straight-line");
-    }, 220 + index * 170);
+    }, 250 + index * 160);
   });
+}
+
+/* ===================================================== */
+/* CAPITAL FUNNEL */
+/* ===================================================== */
+
+function updateCapitalFunnel() {
+  const section = document.querySelector(".capital-funnel-scene");
+  if (!section) return;
+
+  const progress = getSectionProgress(section);
+  const stages = section.querySelectorAll(".capital-stage");
+  const arrows = section.querySelectorAll(".capital-arrow");
+
+  stages.forEach((stage, index) => {
+    const start = index / stages.length;
+    const end = (index + 1) / stages.length;
+    const local = clamp((progress - start) / (end - start), 0, 1);
+
+    stage.classList.toggle("active", local > 0.12 && progress < end + 0.18);
+    stage.classList.toggle("passed", progress > end + 0.04);
+
+    stage.style.setProperty("--stage-progress", local.toFixed(3));
+  });
+
+  arrows.forEach((arrow, index) => {
+    arrow.classList.toggle(
+      "active",
+      progress > (index + 0.45) / stages.length
+    );
+  });
+
+  section.style.setProperty("--capital-progress", progress.toFixed(3));
+}
+
+/* ===================================================== */
+/* DISTRIBUTION BREAKDOWN */
+/* ===================================================== */
+
+function updateDistributionScene() {
+  const section = document.querySelector(".distribution-scene");
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  const focus = clamp(
+    1 - Math.abs(rect.top + rect.height * 0.4 - viewport / 2) / viewport,
+    0,
+    1
+  );
+
+  section.style.setProperty("--distribution-focus", focus.toFixed(3));
+
+  const rows = section.querySelectorAll(".distribution-row");
+
+  rows.forEach((row, index) => {
+    const reveal = clamp(focus * 1.4 - index * 0.12, 0, 1);
+    row.style.setProperty("--row-progress", reveal.toFixed(3));
+    row.classList.toggle("revealed", reveal > 0.15);
+  });
+}
+
+/* ===================================================== */
+/* BLIND SPOT REVEAL */
+/* ===================================================== */
+
+function updateBlindspotScene() {
+  const section = document.querySelector(".blindspot-scene");
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  const focus = clamp(
+    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
+    0,
+    1
+  );
+
+  section.style.setProperty("--blindspot-focus", focus.toFixed(3));
+
+  const knownCards = section.querySelectorAll(".known-card");
+  const unknownCard = section.querySelector(".unknown-card");
+  const punch = section.querySelector(".blindspot-punch");
+
+  knownCards.forEach((card, index) => {
+    card.classList.toggle("revealed", focus > 0.18 + index * 0.12);
+  });
+
+  if (unknownCard) {
+    unknownCard.classList.toggle("revealed", focus > 0.48);
+    unknownCard.classList.toggle("pulse", focus > 0.68);
+  }
+
+  if (punch) {
+    punch.classList.toggle("revealed", focus > 0.62);
+  }
+}
+
+/* ===================================================== */
+/* FUND COMPLEXITY */
+/* ===================================================== */
+
+const fundOwners = [
+  "Department",
+  "Financial Aid",
+  "Budget Officer",
+  "Foundation",
+  "Advancement",
+  "Committee",
+  "Back to Department"
+];
+
+function updateFundComplexity() {
+  const section = document.querySelector(".fund-complexity-scene");
+  if (!section) return;
+
+  const progress = getSectionProgress(section);
+  const card = section.querySelector(".fund-complexity-card");
+  const details = section.querySelectorAll(".fund-detail");
+  const owner = document.getElementById("fund-owner-cycle");
+  const typeStrip = section.querySelector(".fund-type-strip");
+
+  section.style.setProperty("--fund-progress", progress.toFixed(3));
+
+  if (card) {
+    card.classList.toggle("complex", progress > 0.28);
+    card.classList.toggle("crowded", progress > 0.62);
+  }
+
+  details.forEach((detail, index) => {
+    detail.classList.toggle("revealed", progress > 0.18 + index * 0.12);
+  });
+
+  if (owner) {
+    const ownerIndex = clamp(
+      Math.floor(progress * fundOwners.length),
+      0,
+      fundOwners.length - 1
+    );
+
+    if (owner.textContent !== fundOwners[ownerIndex]) {
+      owner.textContent = fundOwners[ownerIndex];
+      owner.classList.remove("owner-flip");
+
+      requestAnimationFrame(() => {
+        owner.classList.add("owner-flip");
+      });
+    }
+  }
+
+  if (typeStrip) {
+    typeStrip.classList.toggle("revealed", progress > 0.72);
+  }
 }
 
 /* ===================================================== */
@@ -152,55 +299,66 @@ function animateFacilitatorPath(path) {
 
 const mazeJourneyStops = [
   {
-    x: 120,
+    x: 90,
     y: 680,
     label: "The department has one question: can we spend this?"
   },
   {
     x: 640,
-    y: 510,
-    label: "Maybe the Business Office knows."
+    y: 560,
+    label: "The budget officer sends the question to Financial Aid."
   },
   {
-    x: 1160,
-    y: 260,
-    label: "The Foundation can confirm the fund exists, but not always the use."
+    x: 390,
+    y: 820,
+    label: "Financial Aid can award it only if criteria and process are clear."
   },
   {
-    x: 1720,
-    y: 450,
-    label: "Advancement may know donor intent, but not the spending process."
+    x: 700,
+    y: 430,
+    label: "Back to the budget officer. Still not solved."
   },
   {
-    x: 1370,
-    y: 690,
-    label: "Back to the Foundation: the restriction still needs interpretation."
+    x: 1240,
+    y: 230,
+    label: "Foundation AP confirms the fund exists, but not the purpose."
   },
   {
-    x: 760,
-    y: 930,
-    label: "Financial Aid can award it, but only if the criteria are clear."
+    x: 1660,
+    y: 610,
+    label: "Foundation needs donor-intent context."
   },
   {
-    x: 350,
-    y: 1090,
+    x: 920,
+    y: 720,
+    label: "Advancement knows the donor story, not the awarding process."
+  },
+  {
+    x: 1020,
+    y: 1030,
+    label: "Back to Financial Aid. Still need owner and selection process."
+  },
+  {
+    x: 1580,
+    y: 780,
+    label: "Back to Foundation. Restriction still needs interpretation."
+  },
+  {
+    x: 1500,
+    y: 1200,
     label: "Back to the department. The question still is not answered."
   },
   {
-    x: 1220,
-    y: 1060,
-    label: "Policy enters the conversation: process, purpose, and documentation all matter."
+    x: 540,
+    y: 1180,
+    label: "Policy enters the conversation: purpose, process, authority, documentation."
   },
   {
-    x: 1840,
-    y: 860,
+    x: 2050,
+    y: 990,
     label: "Everyone helped. No one owns the outcome."
   }
 ];
-
-function interpolate(a, b, t) {
-  return a + ((b - a) * t);
-}
 
 function updateMazeJourney() {
   const section = document.querySelector(".maze-journey");
@@ -213,10 +371,7 @@ function updateMazeJourney() {
 
   if (!section || !viewport || !world) return;
 
-  const rect = section.getBoundingClientRect();
-  const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
-  const rawProgress = clamp(-rect.top / scrollable, 0, 1);
-
+  const rawProgress = getSectionProgress(section);
   const segmentCount = mazeJourneyStops.length - 1;
   const journeyProgress = clamp(rawProgress, 0, 1);
 
@@ -240,29 +395,32 @@ function updateMazeJourney() {
   const viewportWidth = viewport.offsetWidth;
   const viewportHeight = viewport.offsetHeight;
 
+  const worldWidth = 2600;
+  const worldHeight = 1700;
+
   const translateX = clamp(
     (viewportWidth / 2) - currentX,
-    viewportWidth - 2400,
+    viewportWidth - worldWidth,
     0
   );
 
   const translateY = clamp(
     (viewportHeight / 2) - currentY,
-    viewportHeight - 1500,
+    viewportHeight - worldHeight,
     0
   );
 
   const panic =
-    Math.sin(rawProgress * Math.PI * 16) *
-    5 *
-    (1 - rawProgress * 0.75);
+    Math.sin(rawProgress * Math.PI * 22) *
+    7 *
+    (1 - rawProgress * 0.72);
 
   world.style.transform =
     `translate3d(${translateX + panic}px, ${translateY - panic}px, 0)`;
 
   if (path) {
-    const pathDraw = clamp(rawProgress * 1.42, 0, 1);
-    path.style.strokeDashoffset = `${3200 - (3200 * pathDraw)}`;
+    const pathDraw = clamp(rawProgress * 1.35, 0, 1);
+    path.style.strokeDashoffset = `${4200 - (4200 * pathDraw)}`;
   }
 
   const visibleNodeIndex = rawProgress > 0.92
@@ -282,11 +440,94 @@ function updateMazeJourney() {
   }
 
   if (questionCard) {
-    questionCard.classList.toggle("visible", rawProgress > 0.07 && rawProgress < 0.48);
-    questionCard.classList.toggle("faded", rawProgress >= 0.48);
+    questionCard.classList.toggle("visible", rawProgress > 0.06 && rawProgress < 0.42);
+    questionCard.classList.toggle("faded", rawProgress >= 0.42);
   }
 
   section.style.setProperty("--maze-progress", rawProgress.toFixed(3));
+}
+
+/* ===================================================== */
+/* FACILITATOR CONTRAST */
+/* ===================================================== */
+
+function updateFacilitatorScene() {
+  const section = document.querySelector(".facilitator-scene");
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  const focus = clamp(
+    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
+    0,
+    1
+  );
+
+  section.style.setProperty("--facilitator-focus", focus.toFixed(3));
+
+  const before = section.querySelector(".facilitator-before");
+  const after = section.querySelector(".facilitator-after");
+  const arrow = section.querySelector(".facilitator-arrow");
+  const path = section.querySelector(".facilitator-path");
+
+  if (before) before.classList.toggle("faded", focus > 0.48);
+  if (arrow) arrow.classList.toggle("active", focus > 0.36);
+  if (after) after.classList.toggle("active", focus > 0.46);
+
+  if (path && focus > 0.52 && path.dataset.animated !== "true") {
+    path.dataset.animated = "true";
+    animateFacilitatorPath(path);
+  }
+}
+
+/* ===================================================== */
+/* INDUSTRY GAP + INACTIVITY */
+/* ===================================================== */
+
+function updateIndustryGapScene() {
+  const section = document.querySelector(".industry-gap-scene");
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  const focus = clamp(
+    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
+    0,
+    1
+  );
+
+  section.style.setProperty("--industry-focus", focus.toFixed(3));
+
+  const stat = section.querySelector(".conference-stat");
+  if (stat) stat.classList.toggle("active", focus > 0.35);
+}
+
+function updateInactivityScene() {
+  const section = document.querySelector(".inactivity-scene");
+  if (!section) return;
+
+  const rect = section.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  const focus = clamp(
+    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
+    0,
+    1
+  );
+
+  section.style.setProperty("--inactivity-focus", focus.toFixed(3));
+
+  const archetypes = section.querySelectorAll(".archetype-card");
+  archetypes.forEach((card, index) => {
+    card.classList.toggle("revealed", focus > 0.22 + index * 0.12);
+  });
+
+  const signals = section.querySelectorAll(".risk-signal-grid div");
+  signals.forEach((signal, index) => {
+    signal.classList.toggle("revealed", focus > 0.38 + index * 0.045);
+  });
 }
 
 /* ===================================================== */
@@ -312,7 +553,12 @@ const motionObserver = new IntersectionObserver(
         "agreement-page",
         "promise-node",
         "reality-column",
-        "human-vignette"
+        "human-vignette",
+        "known-card",
+        "unknown-card",
+        "fund-complexity-card",
+        "archetype-card",
+        "conference-stat"
       ];
 
       const shouldPop = popTargets.some(className =>
@@ -326,7 +572,7 @@ const motionObserver = new IntersectionObserver(
       }
 
       const metricNumbers = el.querySelectorAll(
-        ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
+        ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .unknown-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
       );
 
       metricNumbers.forEach(counter => {
@@ -335,18 +581,14 @@ const motionObserver = new IntersectionObserver(
 
       if (
         el.matches(
-          ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong"
+          ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .unknown-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
         )
       ) {
         animateCounter(el);
       }
 
-      if (el.classList.contains("timeline-panel")) {
-        animateTimeline(el);
-      }
-
-      if (el.classList.contains("process-card")) {
-        staggerChildren(el, ".process-node", "animate-rise", 130);
+      if (el.classList.contains("agreement-page")) {
+        animateAgreementLines(el);
       }
 
       if (el.classList.contains("activation-map")) {
@@ -363,19 +605,15 @@ const motionObserver = new IntersectionObserver(
 
       if (el.classList.contains("reality-grid")) {
         staggerChildren(el, ".reality-column", "animate-pop", 160);
-        staggerChildren(el, ".vertical-flow div, .vertical-flow span, .complex-flow div", "animate-rise", 90);
+        staggerChildren(el, ".vertical-flow div, .vertical-flow span, .complex-flow-arrowed div, .complex-flow-arrowed span", "animate-rise", 80);
       }
 
-      if (el.classList.contains("complex-flow")) {
-        staggerChildren(el, "div", "animate-rise", 90);
+      if (el.classList.contains("distribution-chart")) {
+        staggerChildren(el, ".distribution-row", "animate-rise", 110);
       }
 
-      if (el.classList.contains("agreement-page")) {
-        animateAgreementLines(el);
-      }
-
-      if (el.classList.contains("facilitator-path")) {
-        animateFacilitatorPath(el);
+      if (el.classList.contains("risk-signal-grid")) {
+        staggerChildren(el, "div", "animate-rise", 55);
       }
 
       if (el.classList.contains("future-grid")) {
@@ -386,7 +624,7 @@ const motionObserver = new IntersectionObserver(
     });
   },
   {
-    threshold: 0.22,
+    threshold: 0.2,
     rootMargin: "0px 0px -10% 0px"
   }
 );
@@ -411,11 +649,20 @@ document.querySelectorAll(`
   .promise-node,
   .reality-grid,
   .reality-column,
-  .complex-flow,
   .human-vignette,
   .facilitator-path,
   .future-grid,
-  .future-grid div
+  .future-grid div,
+  .capital-stage,
+  .distribution-chart,
+  .known-card,
+  .unknown-card,
+  .fund-complexity-card,
+  .industry-gap-scene,
+  .conference-stat,
+  .archetype-card,
+  .risk-signal-grid,
+  .impact-translation
 `).forEach(el => {
   motionObserver.observe(el);
 });
@@ -446,23 +693,6 @@ function updateScrollEffects() {
     hero.style.transform = `translateY(${heroShift}px)`;
   }
 
-  document.querySelectorAll(".machine-card").forEach((card) => {
-    const rect = card.getBoundingClientRect();
-    const viewport = window.innerHeight;
-
-    const distanceFromCenter =
-      Math.abs((rect.top + rect.height / 2) - viewport / 2);
-
-    const focus =
-      clamp(1 - distanceFromCenter / viewport, 0, 1);
-
-    card.style.transform =
-      `translateY(${(1 - focus) * 12}px) scale(${0.985 + focus * 0.015})`;
-
-    card.style.opacity =
-      `${0.72 + focus * 0.28}`;
-  });
-
   const agreementScene = document.querySelector(".agreement-scene");
   const agreementPage = document.querySelector(".agreement-page");
 
@@ -483,7 +713,14 @@ function updateScrollEffects() {
       `scale(${1 + visibleProgress * 0.006})`;
   }
 
+  updateCapitalFunnel();
+  updateDistributionScene();
+  updateBlindspotScene();
+  updateFundComplexity();
   updateMazeJourney();
+  updateFacilitatorScene();
+  updateIndustryGapScene();
+  updateInactivityScene();
 
   const humanVignette = document.querySelector(".human-vignette");
 
