@@ -940,6 +940,18 @@ em {
   line-height: 0.9;
 }
 
+.fund-total strong,
+.fund-distribution strong {
+  min-height: 1em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.fund-total,
+.fund-distribution {
+  min-height: 190px;
+}
+
 .fund-total small,
 .fund-distribution small,
 .fund-detail small {
