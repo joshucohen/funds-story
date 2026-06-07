@@ -281,7 +281,7 @@ em {
 /* ===================================================== */
 
 .capital-funnel-scene {
-  height: 360vh;
+  height: 300vh;
   position: relative;
   background:
     radial-gradient(circle at 18% 20%, rgba(49,92,114,0.08), transparent 32%),
@@ -294,14 +294,23 @@ em {
   top: 0;
   height: 100vh;
   display: grid;
-  grid-template-columns: minmax(360px, 0.8fr) 1.2fr;
-  gap: 6vw;
+  grid-template-columns: minmax(360px, 0.86fr) 1.14fr;
+  gap: 5vw;
   align-items: center;
-  padding: 8vh 8vw;
+  padding: 6vh 8vw;
   overflow: hidden;
 }
 
 .capital-copy {
+  max-width: 720px;
+  align-self: center;
+}
+
+.capital-copy h2 {
+  font-size: clamp(3rem, 5.8vw, 6.6rem);
+}
+
+.capital-copy p {
   max-width: 720px;
 }
 
@@ -319,20 +328,23 @@ em {
 
 .capital-visual {
   width: 100%;
+  max-height: 86vh;
   display: grid;
   place-items: center;
+  gap: 0.75rem;
+  align-self: center;
 }
 
 .capital-stage {
-  width: min(620px, 100%);
-  padding: clamp(2rem, 4vw, 3.2rem);
-  border-radius: var(--radius-lg);
+  width: min(560px, 100%);
+  padding: clamp(1.35rem, 2.2vw, 2.1rem);
+  border-radius: 34px;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58));
   border: 1px solid rgba(255,255,255,0.55);
-  box-shadow: var(--shadow-large);
+  box-shadow: var(--shadow-medium);
   opacity: 0.18;
-  transform: translateY(44px) scale(0.96);
+  transform: translateY(28px) scale(0.96);
   transition:
     opacity 700ms var(--ease),
     transform 700ms var(--ease),
@@ -347,7 +359,7 @@ em {
 
 .capital-stage.passed {
   opacity: 0.24;
-  transform: translateY(-16px) scale(0.94);
+  transform: translateY(-10px) scale(0.94);
 }
 
 .capital-stage.yearly-focus.active {
@@ -355,21 +367,21 @@ em {
     radial-gradient(circle at 86% 18%, rgba(79,125,90,0.16), transparent 38%),
     linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.68));
   box-shadow:
-    0 0 0 12px rgba(79,125,90,0.05),
+    0 0 0 10px rgba(79,125,90,0.05),
     var(--shadow-large);
 }
 
 .capital-stage strong {
   display: block;
-  font-size: clamp(5rem, 12vw, 10rem);
+  font-size: clamp(4rem, 8vw, 7.4rem);
   line-height: 0.85;
   letter-spacing: -0.08em;
 }
 
 .capital-stage span {
   display: block;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.86rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--muted);
@@ -377,13 +389,16 @@ em {
 }
 
 .capital-stage p {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   margin-bottom: 0;
+  font-size: clamp(0.95rem, 1.05vw, 1.12rem);
+  line-height: 1.55;
 }
 
 .capital-arrow {
-  margin: 1.4rem auto;
-  font-size: 3rem;
+  margin: 0.2rem auto;
+  font-size: 2.35rem;
+  line-height: 1;
   color: var(--gold);
   opacity: 0.15;
   transition: all 600ms var(--ease);
@@ -391,7 +406,7 @@ em {
 
 .capital-arrow.active {
   opacity: 1;
-  transform: translateY(10px);
+  transform: translateY(5px);
 }
 
 /* ===================================================== */
