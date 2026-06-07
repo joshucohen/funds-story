@@ -27,16 +27,11 @@
         <h1>The Money That Doesn't Move</h1>
 
         <p class="hero-subtitle">
-          Universities are very good at measuring money raised.
+          Universities raise billions every year.
         </p>
 
         <p class="hero-subtitle muted">
-          They are also very good at measuring money invested.
-        </p>
-
-        <p class="hero-subtitle">
-          But between endowment performance and real-world impact, there is a quieter question:
-          <strong>how well does philanthropic money actually move?</strong>
+          Some of the money already available for spending never reaches its intended purpose.
         </p>
       </div>
     </section>
@@ -62,9 +57,7 @@
     <section class="statement-scene">
       <div class="statement-inner">
         <p class="kicker">The surprise</p>
-        <h2>
-          The problem is not always finding more money.
-        </h2>
+        <h2>The problem is not always finding more money.</h2>
         <p class="statement-follow">
           Sometimes, the harder challenge is moving the money that has already been released for use.
         </p>
@@ -80,8 +73,12 @@
             The 2025 NACUBO-Commonfund Study included 657 colleges, universities, and affiliated foundations
             with a combined <strong>$944.3 billion</strong> in endowment assets.
           </p>
-          <p>
+          <p class="capital-copy-shift" data-copy-step="1">
             But invested assets are not the same thing as spendable money.
+          </p>
+          <p class="capital-copy-shift" data-copy-step="2">
+            In FY25, institutions withdrew <strong>$33.4 billion</strong> from endowments. That is the annual pool
+            already released to support institutional purposes.
           </p>
         </div>
 
@@ -94,10 +91,10 @@
 
           <div class="capital-arrow" aria-hidden="true">↓</div>
 
-          <div class="capital-stage capital-distribution" data-capital-step="1">
+          <div class="capital-stage capital-distribution yearly-focus" data-capital-step="1">
             <span>Annual endowment withdrawals</span>
             <strong>$33.4B</strong>
-            <p>Money released from endowments in FY25 to support institutional purposes.</p>
+            <p>The yearly spendable pool released from endowments in FY25.</p>
           </div>
 
           <div class="capital-arrow" aria-hidden="true">↓</div>
@@ -111,52 +108,63 @@
       </div>
     </section>
 
-    <section class="distribution-scene">
-      <div class="scene-header centered">
-        <p class="eyebrow">Where the withdrawals are intended to go</p>
-        <h2>The largest category is student support.</h2>
-        <p>
-          In FY25, nearly half of endowment spending was committed to student financial aid.
-          That is why scholarships become the example in this story.
-        </p>
+    <section class="distribution-scene distribution-scrolly" id="distribution-scene">
+      <div class="distribution-sticky">
+        <div class="scene-header centered">
+          <p class="eyebrow">Where the withdrawals are intended to go</p>
+          <h2>Nearly half of endowment spending supports students.</h2>
+          <p>
+            The $33.4 billion annual withdrawal pool does not point to one destination.
+            It moves through many mission categories. The largest is student financial aid.
+          </p>
+        </div>
+
+        <div class="distribution-dataviz" aria-label="FY25 endowment spending categories">
+          <div class="distribution-row highlight scholarships" style="--w: 47.4%;">
+            <span>Student financial aid</span>
+            <div class="distribution-bar"><i></i></div>
+            <strong>47.4%</strong>
+          </div>
+
+          <div class="distribution-row" style="--w: 17.7%;">
+            <span>Academic programs &amp; research</span>
+            <div class="distribution-bar"><i></i></div>
+            <strong>17.7%</strong>
+          </div>
+
+          <div class="distribution-row" style="--w: 10.8%;">
+            <span>Faculty positions</span>
+            <div class="distribution-bar"><i></i></div>
+            <strong>10.8%</strong>
+          </div>
+
+          <div class="distribution-row" style="--w: 7.6%;">
+            <span>Facilities</span>
+            <div class="distribution-bar"><i></i></div>
+            <strong>7.6%</strong>
+          </div>
+
+          <div class="distribution-row" style="--w: 16.6%;">
+            <span>Other purposes</span>
+            <div class="distribution-bar"><i></i></div>
+            <strong>16.6%</strong>
+          </div>
+        </div>
+
+        <div class="distribution-callout">
+          <strong>Scholarships become the lens.</strong>
+          <p>
+            The same mechanics can apply to fellowships, research, faculty support, buildings,
+            symposiums, departments, programs, awards, and other restricted purposes.
+          </p>
+        </div>
       </div>
 
-      <div class="distribution-chart" aria-label="FY25 endowment spending categories">
-        <div class="distribution-row highlight" style="--w: 47.4%;">
-          <span>Financial aid</span>
-          <strong>47.4%</strong>
-          <i></i>
-        </div>
-
-        <div class="distribution-row" style="--w: 17.7%;">
-          <span>Academic programs &amp; research</span>
-          <strong>17.7%</strong>
-          <i></i>
-        </div>
-
-        <div class="distribution-row" style="--w: 10.8%;">
-          <span>Faculty positions</span>
-          <strong>10.8%</strong>
-          <i></i>
-        </div>
-
-        <div class="distribution-row" style="--w: 7.6%;">
-          <span>Facilities</span>
-          <strong>7.6%</strong>
-          <i></i>
-        </div>
-
-        <div class="distribution-row" style="--w: 16.6%;">
-          <span>Other purposes</span>
-          <strong>16.6%</strong>
-          <i></i>
-        </div>
+      <div class="distribution-scroll-steps" aria-hidden="true">
+        <div data-distribution-step="0"></div>
+        <div data-distribution-step="1"></div>
+        <div data-distribution-step="2"></div>
       </div>
-
-      <p class="scene-note centered-note">
-        Scholarships are the lens. The same mechanics can apply to fellowships, research, faculty support,
-        buildings, symposiums, departments, programs, awards, and countless other restricted purposes.
-      </p>
     </section>
 
     <section class="blindspot-scene" id="blindspot-scene">
@@ -174,12 +182,12 @@
           <div class="known-card">
             <span class="pill">Known</span>
             <strong>$33.4B</strong>
-            <p>Endowment withdrawals</p>
+            <p>Annual endowment withdrawals</p>
           </div>
 
-          <div class="unknown-card">
-            <span class="pill">Not standardized</span>
-            <strong>?</strong>
+          <div class="unknown-card rolling-card">
+            <span class="pill">Unknown</span>
+            <strong class="rolling-unknown" id="rolling-unknown">$--.-B</strong>
             <p>How much distributed philanthropic money was actually spent from available fund balances?</p>
           </div>
         </div>
@@ -191,7 +199,7 @@
       </div>
     </section>
 
-    <section class="reality-scene">
+    <section class="reality-scene enhanced-reality-scene" id="reality-scene">
       <div class="scene-header centered">
         <p class="eyebrow">The real pathway</p>
         <h2>The straight line becomes a sequence of decisions.</h2>
@@ -201,38 +209,45 @@
         </p>
       </div>
 
-      <div class="reality-grid">
-        <div class="reality-column simple">
+      <div class="pathway-comparison">
+        <div class="pathway-panel imagined-pathway">
           <h3>What people imagine</h3>
-          <div class="vertical-flow">
-            <div>Donor gives</div>
-            <span>↓</span>
-            <div>University receives</div>
-            <span>↓</span>
-            <div>Student benefits</div>
+          <div class="simple-pathway-line">
+            <div class="pathway-node">Donor gives</div>
+            <span>→</span>
+            <div class="pathway-node">University receives</div>
+            <span>→</span>
+            <div class="pathway-node impact-node">Student benefits</div>
           </div>
         </div>
 
-        <div class="reality-column complex">
+        <div class="pathway-panel real-pathway">
           <h3>What often has to happen</h3>
-          <div class="complex-flow-arrowed">
-            <div>Gift agreement</div>
-            <span>→</span>
-            <div>Fund created</div>
-            <span>→</span>
-            <div>Distribution released</div>
-            <span>→</span>
-            <div>Purpose interpreted</div>
-            <span>→</span>
-            <div>Owner identified</div>
-            <span>→</span>
-            <div>Eligible use confirmed</div>
-            <span>→</span>
-            <div>Approval pathway found</div>
-            <span>→</span>
-            <div>Spending plan created</div>
-            <span>→</span>
-            <div>Impact reported</div>
+
+          <div class="pathway-map" aria-label="Operational pathway from gift to impact">
+            <div class="pathway-step" data-path-step="0">Gift agreement</div>
+            <div class="pathway-connector"></div>
+            <div class="pathway-step" data-path-step="1">Fund created</div>
+            <div class="pathway-connector"></div>
+            <div class="pathway-step" data-path-step="2">Distribution released</div>
+            <div class="pathway-connector warning"></div>
+            <div class="pathway-step decision" data-path-step="3">Purpose interpreted</div>
+            <div class="pathway-connector warning"></div>
+            <div class="pathway-step decision" data-path-step="4">Owner identified</div>
+            <div class="pathway-connector warning"></div>
+            <div class="pathway-step decision" data-path-step="5">Eligible use confirmed</div>
+            <div class="pathway-connector warning"></div>
+            <div class="pathway-step decision" data-path-step="6">Approval pathway found</div>
+            <div class="pathway-connector"></div>
+            <div class="pathway-step" data-path-step="7">Spending plan created</div>
+            <div class="pathway-connector"></div>
+            <div class="pathway-step impact-node" data-path-step="8">Impact reported</div>
+          </div>
+
+          <div class="pathway-friction-meter">
+            <span>Friction points</span>
+            <strong>4</strong>
+            <p>Interpretation, ownership, eligibility, and approval can each stop the path.</p>
           </div>
         </div>
       </div>
@@ -262,72 +277,90 @@
       </div>
     </section>
 
-    <section class="fund-complexity-scene" id="fund-complexity">
+    <section class="fund-complexity-scene investigation-fund-scene" id="fund-complexity">
       <div class="fund-complexity-sticky">
         <div class="fund-complexity-copy">
           <p class="eyebrow">One fund</p>
           <h2>A simple scholarship fund stops looking simple.</h2>
           <p>
-            Start with an endowment. The invested principal remains invested. The annual distribution
-            is the money available to spend.
+            Start with an endowment. The invested principal remains invested.
+            The annual distribution is the money available to spend.
           </p>
           <p>
             Then the real questions begin.
           </p>
         </div>
 
-        <div class="fund-complexity-card" aria-label="Example scholarship endowment growing more complex as requirements appear">
-          <span class="pill">Example fund</span>
-          <h3>Scholarship Support Endowment</h3>
+        <div class="fund-investigation-layout">
+          <div class="fund-complexity-card investigation-card" aria-label="Example scholarship endowment growing more complex as requirements appear">
+            <span class="pill">Example fund</span>
+            <h3>Scholarship Support Endowment</h3>
 
-          <div class="fund-total">
-            <span>Invested corpus</span>
-            <strong>$250,000</strong>
-            <small>Not the spendable amount.</small>
-          </div>
+            <div class="fund-money-stack">
+              <div class="fund-total">
+                <span>Invested corpus</span>
+                <strong>$250,000</strong>
+                <small>Not the spendable amount.</small>
+              </div>
 
-          <div class="fund-distribution">
-            <span>Annual distribution</span>
-            <strong>~$12,250</strong>
-            <small>Illustrative 4.9% endowment spending policy example.</small>
-          </div>
-
-          <div class="fund-complexity-grid">
-            <div class="fund-detail purpose-detail">
-              <span>Purpose</span>
-              <strong>Undergraduate scholarship support</strong>
-              <small>Sounds straightforward. The agreement will complicate it.</small>
+              <div class="fund-distribution">
+                <span>Annual distribution</span>
+                <strong>~$12,250</strong>
+                <small>Illustrative 4.9% endowment spending policy example.</small>
+              </div>
             </div>
 
-            <div class="fund-detail restriction-detail">
-              <span>Restriction</span>
-              <strong>Academic promise + financial need + institutional policy</strong>
-              <small>Each phrase can become a decision point.</small>
-            </div>
+            <div class="fund-complexity-grid">
+              <div class="fund-detail purpose-detail">
+                <span>Purpose</span>
+                <strong>Undergraduate scholarship support</strong>
+                <small>Sounds straightforward. The agreement will complicate it.</small>
+              </div>
 
-            <div class="fund-detail owner-detail">
-              <span>Possible owner</span>
-              <strong id="fund-owner-cycle">Department</strong>
-              <small>Financial Aid? Foundation? Budget Officer? Advancement? Committee?</small>
-            </div>
+              <div class="fund-detail restriction-detail">
+                <span>Restriction</span>
+                <strong>Academic promise + financial need + institutional policy</strong>
+                <small>Each phrase can become a decision point.</small>
+              </div>
 
-            <div class="fund-detail spend-detail">
-              <span>Spend question</span>
-              <strong>Who can approve this?</strong>
-              <small>The balance is visible. The pathway may not be.</small>
+              <div class="fund-detail owner-detail">
+                <span>Possible owner</span>
+                <strong id="fund-owner-cycle">Department</strong>
+                <small>Financial Aid? Foundation? Budget Officer? Advancement? Committee?</small>
+              </div>
+
+              <div class="fund-detail spend-detail">
+                <span>Spend question</span>
+                <strong>Who can approve this?</strong>
+                <small>The balance is visible. The pathway may not be.</small>
+              </div>
             </div>
           </div>
 
-          <div class="fund-type-strip">
-            <span>Now imagine this for:</span>
-            <b>scholarships</b>
-            <b>fellowships</b>
-            <b>research</b>
-            <b>awards</b>
-            <b>buildings</b>
-            <b>departments</b>
-            <b>symposiums</b>
-          </div>
+          <aside class="fund-investigation-panel" aria-label="Investigation checklist">
+            <span class="pill">Investigation layer</span>
+            <h3>What has to be known before money moves?</h3>
+
+            <div class="investigation-list">
+              <div data-investigation-step="0"><span>01</span> Is the fund active?</div>
+              <div data-investigation-step="1"><span>02</span> Is the available balance spendable?</div>
+              <div data-investigation-step="2"><span>03</span> Who owns the next step?</div>
+              <div data-investigation-step="3"><span>04</span> Are award criteria mapped?</div>
+              <div data-investigation-step="4"><span>05</span> Is the approval pathway clear?</div>
+              <div data-investigation-step="5"><span>06</span> Can impact be reported back?</div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="fund-type-strip">
+          <span>Now imagine this for:</span>
+          <b>scholarships</b>
+          <b>fellowships</b>
+          <b>research</b>
+          <b>awards</b>
+          <b>buildings</b>
+          <b>departments</b>
+          <b>symposiums</b>
         </div>
       </div>
     </section>
@@ -377,9 +410,9 @@
             <span class="pill">Pause</span>
             <h3>Give up yet?</h3>
             <p>
-              People with roughly your level of training in donor-intent interpretation
-              are often expected to decide whether money can be spent from language like this.
-              <em>Unless you happen to be one of the world’s few experts in this domain, in which case, congratulations, this section is about your coworkers.</em>
+              <strong class="give-up-lead">People with roughly your level of training in donor-intent interpretation
+              are often expected to decide whether money can be spent from language like this.</strong>
+              <em class="give-up-aside">Unless you happen to be one of the world’s few experts in this domain, in which case, congratulations, this section is about your coworkers.</em>
             </p>
           </div>
 
@@ -511,8 +544,8 @@
       </div>
     </section>
 
-    <section class="facilitator-scene" id="facilitator-scene">
-      <div class="facilitator-inner">
+    <section class="facilitator-scene facilitator-scrolly" id="facilitator-scene">
+      <div class="facilitator-sticky">
         <div class="facilitator-copy">
           <p class="eyebrow">With a facilitator</p>
           <h2>The same complexity does not disappear. It becomes navigable.</h2>
@@ -522,35 +555,62 @@
           </p>
         </div>
 
-        <div class="facilitator-contrast" aria-label="Before and after facilitator comparison">
-          <div class="facilitator-before">
-            <span>Without ownership</span>
-            <strong>Weeks, months, or unresolved</strong>
-            <p>Question bounces across offices.</p>
+        <div class="facilitator-system" aria-label="Scrollytelling comparison of without and with a facilitator">
+          <div class="facilitator-metrics">
+            <div class="facilitator-before">
+              <span>Without ownership</span>
+              <strong>Weeks, months, or unresolved</strong>
+              <p>Question bounces across offices.</p>
+            </div>
+
+            <div class="facilitator-after">
+              <span>With ownership</span>
+              <strong>Days to weeks</strong>
+              <p>Question becomes a pathway to impact.</p>
+            </div>
           </div>
 
-          <div class="facilitator-arrow">→</div>
+          <div class="facilitator-network">
+            <div class="network-node question-node" data-facilitator-node="0">Question</div>
+            <div class="network-node purpose-node" data-facilitator-node="1">Purpose</div>
+            <div class="network-node barrier-node" data-facilitator-node="2">Barrier</div>
+            <div class="network-node owner-node" data-facilitator-node="3">Owner</div>
+            <div class="network-node plan-node" data-facilitator-node="4">Plan</div>
+            <div class="network-node aid-node impact-node" data-facilitator-node="5">Student Awarded</div>
 
-          <div class="facilitator-after">
-            <span>With ownership</span>
-            <strong>Days to weeks</strong>
-            <p>Question becomes a pathway to impact.</p>
+            <div class="facilitator-center">
+              <span>Facilitator</span>
+              <strong>Owns the question</strong>
+            </div>
+
+            <svg class="facilitator-lines" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+              <path class="facilitator-chaos-line" d="M120 250 C270 70, 470 430, 610 160 C760 -20, 920 270, 780 420" />
+              <path class="facilitator-clear-line" d="M120 250 C260 250, 360 250, 500 250 C640 250, 760 250, 880 250" />
+            </svg>
+          </div>
+
+          <div class="facilitator-path premium-path" aria-label="A direct path from question to impact">
+            <div class="facilitator-node">Question</div>
+            <div class="facilitator-line"></div>
+            <div class="facilitator-node">Review Purpose</div>
+            <div class="facilitator-line"></div>
+            <div class="facilitator-node">Name Barrier</div>
+            <div class="facilitator-line"></div>
+            <div class="facilitator-node">Align Owner</div>
+            <div class="facilitator-line"></div>
+            <div class="facilitator-node">Build Plan</div>
+            <div class="facilitator-line"></div>
+            <div class="facilitator-node impact-node">Student Awarded</div>
           </div>
         </div>
+      </div>
 
-        <div class="facilitator-path premium-path" aria-label="A direct path from question to impact">
-          <div class="facilitator-node">Question</div>
-          <div class="facilitator-line"></div>
-          <div class="facilitator-node">Review Purpose</div>
-          <div class="facilitator-line"></div>
-          <div class="facilitator-node">Name Barrier</div>
-          <div class="facilitator-line"></div>
-          <div class="facilitator-node">Align Owner</div>
-          <div class="facilitator-line"></div>
-          <div class="facilitator-node">Build Plan</div>
-          <div class="facilitator-line"></div>
-          <div class="facilitator-node impact-node">Student Awarded</div>
-        </div>
+      <div class="facilitator-scroll-steps" aria-hidden="true">
+        <div data-facilitator-step="0"></div>
+        <div data-facilitator-step="1"></div>
+        <div data-facilitator-step="2"></div>
+        <div data-facilitator-step="3"></div>
+        <div data-facilitator-step="4"></div>
       </div>
     </section>
 
@@ -646,9 +706,7 @@
     <section class="statement-scene">
       <div class="statement-inner">
         <p class="kicker">Act IV · The intervention</p>
-        <h2>
-          The fix was not another policy. It was ownership of the question.
-        </h2>
+        <h2>The fix was not another policy. It was ownership of the question.</h2>
         <p>
           The breakthrough came from asking a simple operational question:
           what is actually stopping this fund from being used?

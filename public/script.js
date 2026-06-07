@@ -5,6 +5,8 @@
 const progressBar = document.getElementById("progress-bar");
 
 let ticking = false;
+let unknownRollerStarted = false;
+let unknownRollerInterval = null;
 
 /* ===================================================== */
 /* HELPERS */
@@ -29,6 +31,19 @@ function getSectionProgress(section) {
   const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
 
   return clamp(-rect.top / scrollable, 0, 1);
+}
+
+function getViewportFocus(element, center = 0.5) {
+  if (!element) return 0;
+
+  const rect = element.getBoundingClientRect();
+  const viewport = window.innerHeight;
+
+  return clamp(
+    1 - Math.abs(rect.top + rect.height * center - viewport / 2) / viewport,
+    0,
+    1
+  );
 }
 
 function parseMetricText(text) {
@@ -56,6 +71,7 @@ function parseMetricText(text) {
 
 function animateCounter(element) {
   if (!element || element.dataset.counted === "true") return;
+  if (element.classList.contains("rolling-unknown")) return;
 
   const parsed = parseMetricText(element.textContent);
 
@@ -105,7 +121,9 @@ function staggerChildren(parent, selector, className = "animate-rise", delay = 1
 }
 
 function animateAgreementLines(page) {
-  if (!page) return;
+  if (!page || page.dataset.linesAnimated === "true") return;
+
+  page.dataset.linesAnimated = "true";
 
   const lines = page.querySelectorAll(".agreement-line");
 
@@ -125,7 +143,10 @@ function animateAgreementLines(page) {
 }
 
 function animateFacilitatorPath(path) {
-  if (!path) return;
+  if (!path || path.dataset.animated === "true") return;
+
+  path.dataset.animated = "true";
+  path.classList.add("visible");
 
   staggerChildren(path, ".facilitator-node", "animate-rise", 150);
 
@@ -139,6 +160,40 @@ function animateFacilitatorPath(path) {
 }
 
 /* ===================================================== */
+/* UNKNOWN ROLLING NUMBER */
+/* ===================================================== */
+
+function startUnknownRoller() {
+  const roller = document.getElementById("rolling-unknown");
+  if (!roller || unknownRollerStarted) return;
+
+  unknownRollerStarted = true;
+
+  const values = [
+    "$2.7B",
+    "$18.4B",
+    "$7.9B",
+    "$29.1B",
+    "$11.6B",
+    "$4.3B",
+    "$21.8B",
+    "$15.2B",
+    "$9.5B",
+    "$31.7B",
+    "$6.1B",
+    "$24.4B",
+    "$??.?B"
+  ];
+
+  let index = 0;
+
+  unknownRollerInterval = window.setInterval(() => {
+    roller.textContent = values[index % values.length];
+    index += 1;
+  }, 92);
+}
+
+/* ===================================================== */
 /* CAPITAL FUNNEL */
 /* ===================================================== */
 
@@ -149,13 +204,14 @@ function updateCapitalFunnel() {
   const progress = getSectionProgress(section);
   const stages = section.querySelectorAll(".capital-stage");
   const arrows = section.querySelectorAll(".capital-arrow");
+  const copySteps = section.querySelectorAll(".capital-copy-shift");
 
   stages.forEach((stage, index) => {
     const start = index / stages.length;
     const end = (index + 1) / stages.length;
     const local = clamp((progress - start) / (end - start), 0, 1);
 
-    stage.classList.toggle("active", local > 0.12 && progress < end + 0.18);
+    stage.classList.toggle("active", local > 0.10 && progress < end + 0.16);
     stage.classList.toggle("passed", progress > end + 0.04);
 
     stage.style.setProperty("--stage-progress", local.toFixed(3));
@@ -164,8 +220,12 @@ function updateCapitalFunnel() {
   arrows.forEach((arrow, index) => {
     arrow.classList.toggle(
       "active",
-      progress > (index + 0.45) / stages.length
+      progress > (index + 0.44) / stages.length
     );
+  });
+
+  copySteps.forEach((copy, index) => {
+    copy.classList.toggle("active", progress > 0.20 + index * 0.28);
   });
 
   section.style.setProperty("--capital-progress", progress.toFixed(3));
@@ -179,24 +239,27 @@ function updateDistributionScene() {
   const section = document.querySelector(".distribution-scene");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const viewport = window.innerHeight;
-
-  const focus = clamp(
-    1 - Math.abs(rect.top + rect.height * 0.4 - viewport / 2) / viewport,
-    0,
-    1
-  );
-
-  section.style.setProperty("--distribution-focus", focus.toFixed(3));
-
+  const progress = getSectionProgress(section);
   const rows = section.querySelectorAll(".distribution-row");
+  const callout = section.querySelector(".distribution-callout");
+
+  section.style.setProperty("--distribution-progress", progress.toFixed(3));
 
   rows.forEach((row, index) => {
-    const reveal = clamp(focus * 1.4 - index * 0.12, 0, 1);
-    row.style.setProperty("--row-progress", reveal.toFixed(3));
-    row.classList.toggle("revealed", reveal > 0.15);
+    const reveal = clamp(progress * 2.1 - index * 0.16, 0, 1);
+    const focusStudent = progress > 0.54;
+
+    row.style.setProperty("--row-progress", easeOutCubic(reveal).toFixed(3));
+    row.classList.toggle("revealed", reveal > 0.08);
+
+    const isScholarship = row.classList.contains("scholarships");
+    row.classList.toggle("focused", focusStudent && isScholarship);
+    row.classList.toggle("dimmed", focusStudent && !isScholarship);
   });
+
+  if (callout) {
+    callout.classList.toggle("visible", progress > 0.64);
+  }
 }
 
 /* ===================================================== */
@@ -207,14 +270,7 @@ function updateBlindspotScene() {
   const section = document.querySelector(".blindspot-scene");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const viewport = window.innerHeight;
-
-  const focus = clamp(
-    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
-    0,
-    1
-  );
+  const focus = getViewportFocus(section, 0.45);
 
   section.style.setProperty("--blindspot-focus", focus.toFixed(3));
 
@@ -229,10 +285,42 @@ function updateBlindspotScene() {
   if (unknownCard) {
     unknownCard.classList.toggle("revealed", focus > 0.48);
     unknownCard.classList.toggle("pulse", focus > 0.68);
+
+    if (focus > 0.50) {
+      startUnknownRoller();
+    }
   }
 
   if (punch) {
     punch.classList.toggle("revealed", focus > 0.62);
+  }
+}
+
+/* ===================================================== */
+/* REAL PATHWAY */
+/* ===================================================== */
+
+function updateRealityPathway() {
+  const section = document.querySelector(".enhanced-reality-scene");
+  if (!section) return;
+
+  const focus = getViewportFocus(section, 0.45);
+  const steps = section.querySelectorAll(".pathway-step");
+  const connectors = section.querySelectorAll(".pathway-connector");
+  const meter = section.querySelector(".pathway-friction-meter");
+
+  section.style.setProperty("--reality-focus", focus.toFixed(3));
+
+  steps.forEach((step, index) => {
+    step.classList.toggle("revealed", focus > 0.16 + index * 0.055);
+  });
+
+  connectors.forEach((connector, index) => {
+    connector.classList.toggle("revealed", focus > 0.20 + index * 0.055);
+  });
+
+  if (meter) {
+    meter.classList.toggle("animate-pop", focus > 0.66);
   }
 }
 
@@ -255,25 +343,31 @@ function updateFundComplexity() {
   if (!section) return;
 
   const progress = getSectionProgress(section);
+  const focus = getViewportFocus(section, 0.45);
   const card = section.querySelector(".fund-complexity-card");
   const details = section.querySelectorAll(".fund-detail");
   const owner = document.getElementById("fund-owner-cycle");
   const typeStrip = section.querySelector(".fund-type-strip");
+  const investigationItems = section.querySelectorAll(".investigation-list div");
 
   section.style.setProperty("--fund-progress", progress.toFixed(3));
 
   if (card) {
-    card.classList.toggle("complex", progress > 0.28);
-    card.classList.toggle("crowded", progress > 0.62);
+    card.classList.toggle("complex", focus > 0.28);
+    card.classList.toggle("crowded", focus > 0.58);
   }
 
   details.forEach((detail, index) => {
-    detail.classList.toggle("revealed", progress > 0.18 + index * 0.12);
+    detail.classList.toggle("revealed", focus > 0.18 + index * 0.10);
+  });
+
+  investigationItems.forEach((item, index) => {
+    item.classList.toggle("revealed", focus > 0.24 + index * 0.075);
   });
 
   if (owner) {
     const ownerIndex = clamp(
-      Math.floor(progress * fundOwners.length),
+      Math.floor(focus * fundOwners.length),
       0,
       fundOwners.length - 1
     );
@@ -289,7 +383,7 @@ function updateFundComplexity() {
   }
 
   if (typeStrip) {
-    typeStrip.classList.toggle("revealed", progress > 0.72);
+    typeStrip.classList.toggle("revealed", focus > 0.70);
   }
 }
 
@@ -448,35 +542,42 @@ function updateMazeJourney() {
 }
 
 /* ===================================================== */
-/* FACILITATOR CONTRAST */
+/* FACILITATOR SCROLLY */
 /* ===================================================== */
 
 function updateFacilitatorScene() {
   const section = document.querySelector(".facilitator-scene");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const viewport = window.innerHeight;
+  const progress = getSectionProgress(section);
+  const focus = getViewportFocus(section, 0.45);
 
-  const focus = clamp(
-    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
-    0,
-    1
-  );
-
+  section.style.setProperty("--facilitator-progress", progress.toFixed(3));
   section.style.setProperty("--facilitator-focus", focus.toFixed(3));
 
   const before = section.querySelector(".facilitator-before");
   const after = section.querySelector(".facilitator-after");
-  const arrow = section.querySelector(".facilitator-arrow");
+  const center = section.querySelector(".facilitator-center");
+  const networkNodes = section.querySelectorAll(".network-node");
   const path = section.querySelector(".facilitator-path");
 
-  if (before) before.classList.toggle("faded", focus > 0.48);
-  if (arrow) arrow.classList.toggle("active", focus > 0.36);
-  if (after) after.classList.toggle("active", focus > 0.46);
+  if (before) {
+    before.classList.toggle("faded", progress > 0.44);
+  }
 
-  if (path && focus > 0.52 && path.dataset.animated !== "true") {
-    path.dataset.animated = "true";
+  if (after) {
+    after.classList.toggle("active", progress > 0.48);
+  }
+
+  if (center) {
+    center.classList.toggle("visible", progress > 0.34);
+  }
+
+  networkNodes.forEach((node, index) => {
+    node.classList.toggle("active", progress > 0.18 + index * 0.08);
+  });
+
+  if (path && progress > 0.64) {
     animateFacilitatorPath(path);
   }
 }
@@ -489,14 +590,7 @@ function updateIndustryGapScene() {
   const section = document.querySelector(".industry-gap-scene");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const viewport = window.innerHeight;
-
-  const focus = clamp(
-    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
-    0,
-    1
-  );
+  const focus = getViewportFocus(section, 0.45);
 
   section.style.setProperty("--industry-focus", focus.toFixed(3));
 
@@ -508,14 +602,7 @@ function updateInactivityScene() {
   const section = document.querySelector(".inactivity-scene");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const viewport = window.innerHeight;
-
-  const focus = clamp(
-    1 - Math.abs(rect.top + rect.height * 0.45 - viewport / 2) / viewport,
-    0,
-    1
-  );
+  const focus = getViewportFocus(section, 0.45);
 
   section.style.setProperty("--inactivity-focus", focus.toFixed(3));
 
@@ -557,8 +644,10 @@ const motionObserver = new IntersectionObserver(
         "known-card",
         "unknown-card",
         "fund-complexity-card",
+        "fund-investigation-panel",
         "archetype-card",
-        "conference-stat"
+        "conference-stat",
+        "pathway-panel"
       ];
 
       const shouldPop = popTargets.some(className =>
@@ -572,7 +661,7 @@ const motionObserver = new IntersectionObserver(
       }
 
       const metricNumbers = el.querySelectorAll(
-        ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .unknown-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
+        ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
       );
 
       metricNumbers.forEach(counter => {
@@ -581,7 +670,7 @@ const motionObserver = new IntersectionObserver(
 
       if (
         el.matches(
-          ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .unknown-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
+          ".metric-card strong, .machine-card strong, .impact-metric strong, .scholarship-box strong, .restriction-number strong, .capital-stage strong, .known-card strong, .conference-stat strong, .fund-total strong, .fund-distribution strong"
         )
       ) {
         animateCounter(el);
@@ -601,15 +690,6 @@ const motionObserver = new IntersectionObserver(
 
       if (el.classList.contains("promise-flow")) {
         staggerChildren(el, ".promise-node, .promise-arrow", "animate-rise", 160);
-      }
-
-      if (el.classList.contains("reality-grid")) {
-        staggerChildren(el, ".reality-column", "animate-pop", 160);
-        staggerChildren(el, ".vertical-flow div, .vertical-flow span, .complex-flow-arrowed div, .complex-flow-arrowed span", "animate-rise", 80);
-      }
-
-      if (el.classList.contains("distribution-chart")) {
-        staggerChildren(el, ".distribution-row", "animate-rise", 110);
       }
 
       if (el.classList.contains("risk-signal-grid")) {
@@ -647,22 +727,21 @@ document.querySelectorAll(`
   .scholarship-box,
   .promise-flow,
   .promise-node,
-  .reality-grid,
-  .reality-column,
   .human-vignette,
   .facilitator-path,
   .future-grid,
   .future-grid div,
   .capital-stage,
-  .distribution-chart,
   .known-card,
   .unknown-card,
   .fund-complexity-card,
+  .fund-investigation-panel,
   .industry-gap-scene,
   .conference-stat,
   .archetype-card,
   .risk-signal-grid,
-  .impact-translation
+  .impact-translation,
+  .pathway-panel
 `).forEach(el => {
   motionObserver.observe(el);
 });
@@ -716,6 +795,7 @@ function updateScrollEffects() {
   updateCapitalFunnel();
   updateDistributionScene();
   updateBlindspotScene();
+  updateRealityPathway();
   updateFundComplexity();
   updateMazeJourney();
   updateFacilitatorScene();
