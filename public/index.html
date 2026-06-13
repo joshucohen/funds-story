@@ -8,6 +8,15 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
+  <meta property="og:title" content="The Money That Doesn't Move" />
+  <meta
+    property="og:description"
+    content="A data scrollytelling project about the gap between endowment distributions and philanthropic impact."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.themoneythatdoesntmove.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <meta
     name="description"
     content="A cinematic data story about higher education philanthropy, endowment distributions, dormant donor funds, operational complexity, and the missing measurement layer between philanthropic capital and impact."
@@ -81,6 +90,10 @@
           <p class="capital-copy-shift" data-copy-step="2">
             In FY25, institutions withdrew <strong>$33.4 billion</strong> from endowments. That is the annual pool
             already released to support institutional purposes.
+          </p>
+          <p class="source-note">
+            Public scale figures come from the FY25 NACUBO-Commonfund Study of Endowments, which reported data from 657
+            U.S. colleges, universities, and affiliated foundations.
           </p>
         </div>
 
@@ -626,14 +639,14 @@
         <div class="conference-stat">
           <strong>95%+</strong>
           <p>
-            In a conference setting with 400+ major institutions represented, more than 95% reported that
-            philanthropic fund utilization, underspending, or related fund-management friction was an area of struggle.
+            In a FundMiner-hosted conference poll with nearly 1,000 participants and 400+ institutions represented,
+            more than 95% of respondents indicated they had not solved the underspent-funds issue.
           </p>
         </div>
 
         <p>
-          That is not presented here as a national benchmark. It is a signal:
-          institutions talk about this problem constantly, but the sector lacks a standard public metric for utilization.
+          This is not a national benchmark. It is a field signal: institutions recognize the problem, but the sector
+          lacks a standard public metric for whether available philanthropic funds reach their intended purpose.
         </p>
       </div>
     </section>
@@ -686,6 +699,117 @@
         The point is not just to find inactive funds after years have passed.
         The point is to predict which funds are at risk before impact stalls.
       </p>
+    </section>
+
+    <section class="diagnostic-scene" id="diagnostic-scene">
+      <div class="diagnostic-sticky">
+        <div class="diagnostic-copy">
+          <p class="eyebrow">The diagnostic</p>
+          <h2>Underspending is a pattern across time.</h2>
+
+          <p class="diagnostic-copy-step active" data-diagnostic-copy="0">
+            A single year can be noisy. A fund may pause, recover, or wait for the right purpose.
+          </p>
+
+          <p class="diagnostic-copy-step" data-diagnostic-copy="1">
+            But three years with no expense activity is no longer noise. It is an operational signal.
+          </p>
+
+          <p class="diagnostic-copy-step" data-diagnostic-copy="2">
+            Three years of spending less than half the available balance says the fund is moving too slowly.
+          </p>
+
+          <p class="diagnostic-copy-step" data-diagnostic-copy="3">
+            Three years of spending less than half the annual distribution says new money is arriving faster than impact.
+          </p>
+
+          <p class="diagnostic-copy-step" data-diagnostic-copy="4">
+            The result is not a moral judgment. It is a work queue: investigate purpose, ownership, process, and plan.
+          </p>
+        </div>
+
+        <div class="diagnostic-visual" aria-label="An anonymized diagnostic showing how underspent fund rules appear in data">
+          <div class="diagnostic-card">
+            <div class="diagnostic-card-head">
+              <span>Anonymized fund diagnostic</span>
+              <strong>5-year activity window</strong>
+            </div>
+
+            <div class="diagnostic-years" aria-hidden="true">
+              <span>Y1</span>
+              <span>Y2</span>
+              <span>Y3</span>
+              <span>Y4</span>
+              <span>Y5</span>
+            </div>
+
+            <div class="diagnostic-track activity-track" data-diagnostic-rule="1">
+              <div>
+                <span>Expense activity</span>
+                <small>Three-year activity signal</small>
+              </div>
+              <div class="activity-pips">
+                <i class="spent"></i>
+                <i class="spent"></i>
+                <i class="quiet"></i>
+                <i class="quiet"></i>
+                <i class="quiet"></i>
+              </div>
+            </div>
+
+            <div class="diagnostic-track balance-track" data-diagnostic-rule="2">
+              <div>
+                <span>Spend vs. available balance</span>
+                <small>Threshold: 50%</small>
+              </div>
+              <div class="diagnostic-bars">
+                <b style="--v: 76%;"></b>
+                <b style="--v: 54%;"></b>
+                <b class="low" style="--v: 31%;"></b>
+                <b class="low" style="--v: 22%;"></b>
+                <b class="low" style="--v: 18%;"></b>
+                <em></em>
+              </div>
+            </div>
+
+            <div class="diagnostic-track distribution-track" data-diagnostic-rule="3">
+              <div>
+                <span>Spend vs. annual distribution</span>
+                <small>Threshold: 50%</small>
+              </div>
+              <div class="diagnostic-bars">
+                <b style="--v: 88%;"></b>
+                <b style="--v: 62%;"></b>
+                <b class="low" style="--v: 24%;"></b>
+                <b class="low" style="--v: 0%;"></b>
+                <b class="low" style="--v: 19%;"></b>
+                <em></em>
+              </div>
+            </div>
+
+            <div class="diagnostic-result">
+              <span>Classification</span>
+              <strong id="diagnostic-result-label">Watchlist</strong>
+              <p id="diagnostic-result-copy">One weak year is a prompt to watch, not enough to classify the fund.</p>
+            </div>
+          </div>
+
+          <div class="diagnostic-rule-strip">
+            <div data-diagnostic-marker="1">No spend</div>
+            <div data-diagnostic-marker="2">&lt;50% of balance</div>
+            <div data-diagnostic-marker="3">&lt;50% of distribution</div>
+            <div data-diagnostic-marker="4">Review queue</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diagnostic-scroll-steps" aria-hidden="true">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </section>
 
     <section class="human-scene">
@@ -775,21 +899,26 @@
           The institutional case-study figures below are anonymized. They are not national estimates.
           They show what can happen when available philanthropic funds are managed as an active portfolio.
         </p>
+        <p class="method-note">
+          In this analysis, an underspent fund met at least one of three conditions: no spending for three or more
+          years, spending less than 50% of available balance for three or more years, or spending less than half of
+          annual endowment distributions for three or more years.
+        </p>
       </div>
 
       <div class="impact-grid">
         <div class="impact-metric">
-          <span>Identified as spendable</span>
+          <span>Identified as underspent or spendable</span>
           <strong>$13M+</strong>
         </div>
 
         <div class="impact-metric">
-          <span>Committed to plans</span>
+          <span>Committed to unit-level spending plans</span>
           <strong>$10M+</strong>
         </div>
 
         <div class="impact-metric hero-metric">
-          <span>Activation after structured review</span>
+          <span>Year-over-year spend-rate increase after intervention</span>
           <strong>8×</strong>
         </div>
       </div>
@@ -881,14 +1010,56 @@
       </div>
     </section>
 
+    <section class="methodology-scene">
+      <div class="methodology-inner">
+        <p class="eyebrow">How to read the evidence</p>
+        <h2>National scale and institutional case work answer different questions.</h2>
+
+        <div class="methodology-grid">
+          <div>
+            <span>Public scale data</span>
+            <p>
+              FY25 NACUBO/Commonfund reporting describes endowment assets, withdrawals, spending commitments by purpose,
+              and the average share of operating expenses funded by endowments.
+            </p>
+          </div>
+
+          <div>
+            <span>Anonymized institutional analysis</span>
+            <p>
+              Case-study figures describe one institution's underspent-fund review, planning work with academic units,
+              and year-over-year activation after intervention.
+            </p>
+          </div>
+
+          <div>
+            <span>Illustrative examples</span>
+            <p>
+              Fund cards, agreements, pathways, and operational scenes are simplified composites designed to explain
+              patterns without disclosing institution-specific fund records.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
+    <p class="project-note">
+      Solo Master’s/PhD submission completed in 2026.
+    </p>
     <p>
       Public scale figures are derived from FY25 NACUBO/Commonfund reporting. The category breakdown refers to
       endowment spending commitments, not a national measure of actual expenditures from spendable fund accounts.
       Institutional intervention figures are anonymized case-study results and are not presented as national estimates.
       Some visual examples are illustrative and designed to explain operational patterns rather than disclose institution-specific fund records.
+    </p>
+    <p class="source-links">
+      Sources:
+      <a href="https://www.commonfund.org/research-center/press-releases/fy25-nacubo-commonfund-study-released">Commonfund FY25 NCSE release</a>,
+      <a href="https://www.nacubo.org/Research/2025/NACUBO-Commonfund-Study-of-Endowments">NACUBO 2025 study page</a>,
+      and <a href="https://www.nacubo.org/Research/2025/Public-NCSE-Tables">NACUBO public NCSE tables</a>.
     </p>
   </footer>
 

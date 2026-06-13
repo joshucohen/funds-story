@@ -3,6 +3,7 @@
 /* ===================================================== */
 
 const progressBar = document.getElementById("progress-bar");
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let ticking = false;
 let unknownRollerStarted = false;
@@ -172,6 +173,7 @@ function animateFacilitatorPath(path) {
 function startUnknownRoller() {
   const roller = document.getElementById("rolling-unknown");
   if (!roller || unknownRollerStarted) return;
+  if (prefersReducedMotion) return;
 
   unknownRollerStarted = true;
 
@@ -624,6 +626,80 @@ function updateInactivityScene() {
 }
 
 /* ===================================================== */
+/* DIAGNOSTIC SCROLLYTELLING */
+/* ===================================================== */
+
+const diagnosticStates = [
+  {
+    label: "Watchlist",
+    copy: "One weak year is a prompt to watch, not enough to classify the fund.",
+    status: ""
+  },
+  {
+    label: "Inactive signal",
+    copy: "Three consecutive years without expense activity moves the fund into review.",
+    status: "underspent"
+  },
+  {
+    label: "Underspent",
+    copy: "Spending stayed below half of available balance for three years.",
+    status: "underspent"
+  },
+  {
+    label: "Underspent",
+    copy: "Annual distributions kept arriving, but less than half was spent for three years.",
+    status: "underspent"
+  },
+  {
+    label: "Review queue",
+    copy: "The next question is operational: who can interpret, approve, and move the money?",
+    status: "review"
+  }
+];
+
+function updateDiagnosticScene() {
+  const section = document.querySelector(".diagnostic-scene");
+  if (!section) return;
+
+  const progress = getSectionProgress(section);
+  const stateIndex = clamp(
+    Math.floor(progress * diagnosticStates.length),
+    0,
+    diagnosticStates.length - 1
+  );
+  const activeRule = clamp(stateIndex, 0, 4);
+
+  section.style.setProperty("--diagnostic-progress", progress.toFixed(3));
+
+  section.querySelectorAll(".diagnostic-copy-step").forEach((copy, index) => {
+    copy.classList.toggle("active", index === stateIndex);
+  });
+
+  section.querySelectorAll(".diagnostic-track").forEach((track) => {
+    const rule = Number(track.dataset.diagnosticRule || 0);
+    track.classList.toggle("active", rule <= activeRule && stateIndex > 0);
+  });
+
+  section.querySelectorAll(".diagnostic-rule-strip div").forEach((marker) => {
+    const rule = Number(marker.dataset.diagnosticMarker || 0);
+    marker.classList.toggle("active", stateIndex > 0 && rule === activeRule);
+  });
+
+  const state = diagnosticStates[stateIndex];
+  const result = section.querySelector(".diagnostic-result");
+  const label = document.getElementById("diagnostic-result-label");
+  const copy = document.getElementById("diagnostic-result-copy");
+
+  if (label) label.textContent = state.label;
+  if (copy) copy.textContent = state.copy;
+
+  if (result) {
+    result.classList.toggle("underspent", state.status === "underspent");
+    result.classList.toggle("review", state.status === "review");
+  }
+}
+
+/* ===================================================== */
 /* INTERSECTION-BASED MOTION */
 /* ===================================================== */
 
@@ -746,6 +822,8 @@ document.querySelectorAll(`
   .conference-stat,
   .archetype-card,
   .risk-signal-grid,
+  .diagnostic-card,
+  .diagnostic-rule-strip,
   .impact-translation,
   .pathway-panel
 `).forEach(el => {
@@ -807,6 +885,7 @@ function updateScrollEffects() {
   updateFacilitatorScene();
   updateIndustryGapScene();
   updateInactivityScene();
+  updateDiagnosticScene();
 
   const humanVignette = document.querySelector(".human-vignette");
 
@@ -835,20 +914,22 @@ window.addEventListener("scroll", () => {
 /* FREEZE SCENE PULSE */
 /* ===================================================== */
 
-document.querySelectorAll(".path-line.broken").forEach(line => {
-  line.animate(
-    [
-      { opacity: 0.42 },
-      { opacity: 0.95 },
-      { opacity: 0.42 }
-    ],
-    {
-      duration: 2600,
-      iterations: Infinity,
-      easing: "ease-in-out"
-    }
-  );
-});
+if (!prefersReducedMotion) {
+  document.querySelectorAll(".path-line.broken").forEach(line => {
+    line.animate(
+      [
+        { opacity: 0.42 },
+        { opacity: 0.95 },
+        { opacity: 0.42 }
+      ],
+      {
+        duration: 2600,
+        iterations: Infinity,
+        easing: "ease-in-out"
+      }
+    );
+  });
+}
 
 /* ===================================================== */
 /* INITIALIZE */
