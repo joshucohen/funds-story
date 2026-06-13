@@ -700,6 +700,50 @@ function updateDiagnosticScene() {
 }
 
 /* ===================================================== */
+/* IMPACT SCROLLYTELLING */
+/* ===================================================== */
+
+function updateImpactScene() {
+  const section = document.querySelector(".impact-scene");
+  if (!section) return;
+
+  const progress = getSectionProgress(section);
+  const stateIndex = clamp(Math.floor(progress * 5), 0, 4);
+
+  section.style.setProperty("--impact-progress", progress.toFixed(3));
+
+  section.querySelectorAll(".impact-copy-step").forEach((copy, index) => {
+    copy.classList.toggle("active", index === stateIndex);
+  });
+
+  section.querySelectorAll(".impact-flow-stage").forEach((stage) => {
+    const step = Number(stage.dataset.impactStage || 0);
+    stage.classList.toggle("active", stateIndex >= step);
+  });
+
+  const lines = section.querySelectorAll(".impact-flow-line");
+  lines.forEach((line, index) => {
+    line.classList.toggle("active", stateIndex >= index + 2);
+  });
+
+  const ratePanel = section.querySelector(".impact-rate-panel");
+  const scholarshipPanel = section.querySelector(".impact-scholarship-panel");
+  const translation = section.querySelector(".impact-translation");
+
+  if (ratePanel) {
+    ratePanel.classList.toggle("active", stateIndex >= 3);
+  }
+
+  if (scholarshipPanel) {
+    scholarshipPanel.classList.toggle("active", stateIndex >= 4);
+  }
+
+  if (translation) {
+    translation.classList.toggle("active", stateIndex >= 4);
+  }
+}
+
+/* ===================================================== */
 /* INTERSECTION-BASED MOTION */
 /* ===================================================== */
 
@@ -886,6 +930,7 @@ function updateScrollEffects() {
   updateIndustryGapScene();
   updateInactivityScene();
   updateDiagnosticScene();
+  updateImpactScene();
 
   const humanVignette = document.querySelector(".human-vignette");
 
