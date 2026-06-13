@@ -91,13 +91,19 @@ function animateCounter(element) {
     const current = number * eased;
 
     element.textContent =
-      `${prefix}${current.toFixed(decimals)}${suffix}`;
+      `${prefix}${current.toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+      })}${suffix}`;
 
     if (progress < 1) {
       requestAnimationFrame(update);
     } else {
       element.textContent =
-        `${prefix}${number.toFixed(decimals)}${suffix}`;
+        `${prefix}${number.toLocaleString(undefined, {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        })}${suffix}`;
     }
   }
 
